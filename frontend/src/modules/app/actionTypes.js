@@ -1,0 +1,15 @@
+export const LOADING = 'project/common/loading';
+export const LOADED = 'project/common/loaded';
+export const ERROR = 'project/common/error';
+export const FIND_ALL_COUNTRIES_COMPLETED = "project/catalog/findAllCountriesCompleted";
+export const FIND_ALL_PROVINCES_COMPLETED = "project/catalog/findAllProvincesCompleted";
+export const FIND_ALL_MUNICIPALITIES_COMPLETED = "project/catalog/findAllMunicipalitiesCompleted";
+export const FIND_ALL_LANGUAGES_COMPLETED = "project/catalog/findAllLanguagesCompleted";
+export const FIND_ALL_EMPLOYMENTS_COMPLETED = "project/catalog/findAllEmploymentsCompleted";
+export const FIND_ALL_STUDIES_COMPLETED = "project/catalog/findAllStudiesCompleted";
+export const FIND_ALL_MARITALSTATUS_COMPLETED = "project/catalog/findAllMaritalStatusCompleted";
+export const FIND_ALL_HOUSINGS_COMPLETED = "project/catalog/findAllHousingsCompleted";
+export const FIND_ALL_COHABITATION_COMPLETED = "project/catalog/findAllCohabitationCompleted";
+export const FIND_ALL_PROGRAMS_COMPLETED = "project/catalog/findAllProgramsCompleted";
+export const FIND_ALL_EXCLUSIONS_COMPLETED = "project/catalog/findAllExclusionsCompleted";
+export const FIND_ALL_DEMANDS_COMPLETED = "project/catalog/findAllDemandsCompleted";

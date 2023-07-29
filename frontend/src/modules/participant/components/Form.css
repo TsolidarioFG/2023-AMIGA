@@ -1,0 +1,49 @@
+.row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 3%;
+    flex-wrap: wrap;
+}
+
+.header-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 3%;
+}
+.item {
+    min-width: 200px;
+    flex-grow: 1;
+}
+.item2 {
+    min-width: 200px;
+    flex-grow: 3;
+}
+
+.space{
+    width: 2%;
+}
+.bigSpace{
+    width: 8%;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 3%;
+}
+.sexo {
+    padding-top: 5px;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
