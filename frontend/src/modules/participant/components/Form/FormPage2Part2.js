@@ -3,7 +3,7 @@ import './Form.css';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
-import * as selectors from "../../app/selectors";
+import * as selectors from "../../../app/selectors";
 import {useSelector} from "react-redux";
 import Autocomplete from "@mui/material/Autocomplete";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,7 +11,7 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 
-const FormPage1Part3 = ({formData, setFormData}) => {
+const FormPage2Part2 = ({formData, setFormData}) => {
     const exclusionFactors = useSelector(selectors.getExclusions);
 
     const [selectedExclusionFactors, setSelectedExclusionFactors] = useState([]);
@@ -293,4 +293,4 @@ const FormPage1Part3 = ({formData, setFormData}) => {
     );
 }
 
-export default FormPage1Part3;
+export default FormPage2Part2;

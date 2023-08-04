@@ -1,17 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import * as selectors from "../../app/selectors";
+import * as selectors from "../../../app/selectors";
 import "./Form.css";
-import {format} from "date-fns";
-import {Errors, HomeLink} from "../../common";
-import Programs from "./Programs";
+import {Errors, HomeLink} from "../../../common";
+import Programs from "../Programs";
 
-const FormPage3 = ({formData, setFormData, previousPage, nextPage}) => {
+const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
     const demands = useSelector(selectors.getDemands);
-    const [selectedPrograms, setSelectedPrograms] = useState([]);
     const [backendErrors, setBackendErrors] = useState(null);
     const [selectedDemand, setSelectedDemand] =
         useState(demands.find((demands) => demands.id === formData.demand) || null);
@@ -99,4 +97,4 @@ const FormPage3 = ({formData, setFormData, previousPage, nextPage}) => {
     );
 };
 
-export default FormPage3;
+export default FormPage4;

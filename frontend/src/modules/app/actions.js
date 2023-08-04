@@ -207,3 +207,20 @@ export const findAllDemands = () => (dispatch, getState) => {
         );
     }
 }
+
+const findAllContractsCompleted = contracts => ({
+    type: actionTypes.FIND_ALL_CONTRACTS_COMPLETED,
+    contracts
+});
+
+export const findAllContracts = () => (dispatch, getState) => {
+
+    const contracts = selectors.getContracts(getState());
+
+    if (!contracts) {
+
+        backend.selectors.findContracts(
+            contracts => dispatch(findAllContractsCompleted(contracts))
+        );
+    }
+}

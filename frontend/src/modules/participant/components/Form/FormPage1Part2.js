@@ -5,7 +5,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import './Form.css';
 import {useSelector} from 'react-redux';
-import * as selectors from '../../app/selectors';
+import * as selectors from '../../../app/selectors';
 
 const FormPage1Part2 = ({formData, setFormData}) => {
 

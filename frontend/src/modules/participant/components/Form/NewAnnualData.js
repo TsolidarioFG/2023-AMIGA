@@ -1,14 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import FormPage2 from "./FormPage2";
 import FormPage3 from "./FormPage3";
+import FormPage4 from "./FormPage4";
 import FormPage1 from "./FormPage1";
-import * as selectors from "../selectors"
-import {useSelector} from "react-redux";
-import NewAnnualDataConfirm from "./NewAnnualDataConfirm";
-import FormPage1Continue from "./FormPage1Continue";
+import * as selectors from "../../selectors"
+import {useDispatch, useSelector} from "react-redux";
+import FormPage1Continue from "./FormPage2";
 import {format} from "date-fns";
+import backend from "../../../../backend";
+import * as actions from "../../actions";
+import FormConfirm from "./FormConfirm";
 
 const NewAnnualData = () => {
+    const dispatch = useDispatch();
+
     const participant = useSelector(selectors.getParticipantData);
     const [currentPage, setCurrentPage] = useState(1);
     const [formData, setFormData] = useState({
@@ -70,6 +74,13 @@ const NewAnnualData = () => {
         programs: [],
         derivation: '',
     });
+    function backendCall(onSucess, onErrors) {
+        backend.participant.createParticipant(
+            formData, data => {
+                onSucess();
+                dispatch(actions.findParticipantCompleted(data));
+            }, onErrors);
+    }
 
     const nextPage = () => {
         setCurrentPage(currentPage + 1);
@@ -112,7 +123,7 @@ const NewAnnualData = () => {
                 );
             case 3:
                 return (
-                    <FormPage2
+                    <FormPage3
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
@@ -121,7 +132,7 @@ const NewAnnualData = () => {
                 );
             case 4:
                 return (
-                    <FormPage3
+                    <FormPage4
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
@@ -130,10 +141,11 @@ const NewAnnualData = () => {
                 );
             case 5:
                 return (
-                    <NewAnnualDataConfirm
+                    <FormConfirm
                         formData={formData}
                         previousPage={previousPage}
-                    ></NewAnnualDataConfirm>
+                        submitAction={backendCall}
+                    ></FormConfirm>
                 );
             default:
                 return null;

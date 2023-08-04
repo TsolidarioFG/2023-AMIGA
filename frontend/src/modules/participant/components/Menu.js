@@ -47,7 +47,7 @@ const Menu = ({user}) => {
                     <ListItemIcon>
                         <NoteAdd/>
                     </ListItemIcon>
-                    <ListItemText primary="Añadir Observación"/>
+                    <ListItemText primary="Añadir Atención"/>
                 </ListItem>
 
             </List>

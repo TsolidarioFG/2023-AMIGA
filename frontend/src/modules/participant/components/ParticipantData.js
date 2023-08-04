@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {PDFViewer} from "@react-pdf/renderer";
-import './Confirm.css';
+import './Form/Confirm.css';
 import {useDispatch, useSelector} from "react-redux";
 import ParticipantPdf from "./ParticipantPdf";
 import Typography from "@mui/material/Typography";
@@ -171,7 +171,7 @@ const ParticipantData = () => {
             if (year === null)
                 setYear(Math.max(...user.yearList));
         }
-    }, [user, state]);
+    }, [user, state, year]);
 
     if (!user) return null
 

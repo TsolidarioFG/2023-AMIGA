@@ -26,6 +26,7 @@ public class ObservationDto {
         this.date = observation.getDate();
         this.title = observation.getTitle();
         this.text = observation.getText();
+        this.observationType = observation.getObservationType().toString();
     }
 
     public Long getId() {

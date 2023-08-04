@@ -16,18 +16,24 @@ public class WorkInsertion {
     private Contract contract;
     private String workField;
 
+    private String specialContract;
     @Enumerated(EnumType.STRING)
     private WorkingDay workingDay;
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
 
-    public WorkInsertion(LocalDate date, Contract contract, String workField, WorkingDay workingDay, Participant participant) {
+    public WorkInsertion(LocalDate date, Contract contract, String workField, WorkingDay workingDay, Participant participant, String specialContract) {
         this.date = date;
         this.contract = contract;
         this.workField = workField;
         this.workingDay = workingDay;
         this.participant = participant;
+        this.specialContract = specialContract;
+    }
+
+    public WorkInsertion() {
+
     }
 
     public void setId(Long id) {
@@ -76,5 +82,13 @@ public class WorkInsertion {
 
     public void setWorkingDay(WorkingDay workingDay) {
         this.workingDay = workingDay;
+    }
+
+    public String getSpecialContract() {
+        return specialContract;
+    }
+
+    public void setSpecialContract(String specialContract) {
+        this.specialContract = specialContract;
     }
 }

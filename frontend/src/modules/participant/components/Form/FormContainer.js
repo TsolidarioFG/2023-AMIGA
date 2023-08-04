@@ -1,18 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import FormPage2 from "./FormPage2";
+import React, {useState} from 'react';
 import FormPage3 from "./FormPage3";
+import FormPage4 from "./FormPage4";
 import FormPage1 from "./FormPage1";
-import * as selectors from "../selectors"
-import {useSelector} from "react-redux";
-import FormEditConfirm from "./FormEditConfirm";
-import FormPage1Continue from "./FormPage1Continue";
+import FormPage1Continue from "./FormPage2";
+import {format} from "date-fns";
+import backend from "../../../../backend";
+import FormConfirm from "./FormConfirm";
 
 const FormContainer = () => {
-    const participant = useSelector(selectors.getParticipantData);
     const [currentPage, setCurrentPage] = useState(1);
     const [formData, setFormData] = useState({
-        idParticipant: null,
-        idAnnualData: null,
         name: '',
         surnames: '',
         dni: '',
@@ -30,13 +27,13 @@ const FormContainer = () => {
         interviewPi: '',
         kids: [],
         country: null,
-        date: '',
-        returned: '',
+        date: format(new Date(), 'yyyy-MM-dd'),
+        returned: false,
         nationalities: [],
         situation: '',
         studies: null,
         languages: [],
-        approved: false,
+        approved: '',
         demandedStudies: '',
         registered: false,
         dateRegister: '',
@@ -78,15 +75,11 @@ const FormContainer = () => {
         setCurrentPage(currentPage - 1);
     };
 
-    useEffect(() => {
-            for (const attribute in participant) {
-                if (participant.hasOwnProperty(attribute) && formData.hasOwnProperty(attribute)) {
-                    formData[attribute] = participant[attribute];
-                }
-            }
+    function backendCall(onSucess, onErrors) {
+        backend.participant.createParticipant(
+            formData, onSucess, onErrors);
+    }
 
-        }, [participant]
-    )
     const renderPage = () => {
         switch (currentPage) {
             case 1:
@@ -97,6 +90,7 @@ const FormContainer = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                     />
+
                 );
             case 2:
                 return (
@@ -111,28 +105,35 @@ const FormContainer = () => {
                 );
             case 3:
                 return (
-                    <FormPage2
-                        formData={formData}
-                        setFormData={setFormData}
-                        nextPage={nextPage}
-                        previousPage={previousPage}
-                    />
-                );
-            case 4:
-                return (
+
                     <FormPage3
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
                     />
+
+                );
+            case 4:
+                return (
+
+                    <FormPage4
+                        formData={formData}
+                        setFormData={setFormData}
+                        nextPage={nextPage}
+                        previousPage={previousPage}
+                    />
+
                 );
             case 5:
                 return (
-                    <FormEditConfirm
+
+                    <FormConfirm
                         formData={formData}
                         previousPage={previousPage}
-                    ></FormEditConfirm>
+                        submitAction={backendCall}
+                    ></FormConfirm>
+
                 );
             default:
                 return null;

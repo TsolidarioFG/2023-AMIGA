@@ -30,6 +30,8 @@ export const getPrograms = state =>
     getModuleState(state).programs;
 export const getDemands = state =>
     getModuleState(state).demands;
+export const getContracts = state =>
+    getModuleState(state).contracts;
 
 export const getProgramName = (programs, id) => {
 
@@ -44,5 +46,21 @@ export const getProgramName = (programs, id) => {
     }
 
     return program.name;
+
+}
+
+export const getContractName = (contracts, id) => {
+
+    if (!contracts) {
+        return '';
+    }
+
+    const contract = contracts.find(contract=> contract.id === id);
+
+    if (!contract) {
+        return '';
+    }
+
+    return contract.name;
 
 }

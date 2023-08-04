@@ -4,10 +4,10 @@ import esLocale from 'date-fns/locale/es';
 import {TextField, Button, Table, TableHead, TableBody, TableRow,
     TableCell, MenuItem, Select, InputLabel,} from "@mui/material";
 import FormControl from "@mui/material/FormControl";
-import {Errors} from "../../common";
+import {Errors} from "../../../common";
 import Typography from "@mui/material/Typography";
 
-const RegistrarMenor = ({ formData, setFormData }) => {
+const RegisterMinor = ({ formData, setFormData }) => {
     const [backendErrors, setBackendErrors] = useState(null);
     const [newChild, setNewChild] = useState({
         sex: "",
@@ -136,4 +136,4 @@ const RegistrarMenor = ({ formData, setFormData }) => {
     );
 };
 
-export default RegistrarMenor;
+export default RegisterMinor;

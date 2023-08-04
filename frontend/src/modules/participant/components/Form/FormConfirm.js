@@ -4,15 +4,13 @@ import {Button, Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Toolb
 import {PDFDownloadLink, PDFViewer} from "@react-pdf/renderer";
 import './Confirm.css';
 import {useSelector} from "react-redux";
-import ParticipantPdf from "./ParticipantPdf";
+import ParticipantPdf from "../ParticipantPdf";
 import Typography from "@mui/material/Typography";
-import * as selectors from "../../app/selectors";
-import {Errors} from "../../common";
-import backend from "../../../backend";
+import * as selectors from "../../../app/selectors";
+import {Errors} from "../../../common";
 
-const FormCreateConfirm = ({formData, previousPage}) => {
+const FormConfirm = ({formData, previousPage, submitAction}) => {
     const [open, setOpen] = useState(false);
-    const [verPDF, setVerPDF] = useState(false);
     const [backendErrors, setBackendErrors] = useState(null);
     const [data, setData] = useState({
         factors: '',
@@ -167,14 +165,13 @@ const FormCreateConfirm = ({formData, previousPage}) => {
     }, [municipalities, provinces, countries]);
 
     const handleSubmit = () => {
-        backend.participant.createParticipant(
-            formData, setOpen(true),
-                errors => setBackendErrors(errors));
+        submitAction(setOpen(true),
+            errors => setBackendErrors(errors));
     }
 
     const handleCloseModal = () => {
         setOpen(false);
-        navigate('/');
+        navigate(-1);
     }
     if(!municipalities && !provinces && !countries && !housings && !maritalStatus && !cohabitation
         && !studies && !employment && !languages && !demands && !programs && !exclusionFactors)
@@ -190,9 +187,6 @@ const FormCreateConfirm = ({formData, previousPage}) => {
             <AppBar position="static">
                 <Toolbar style={{justifyContent: "space-between"}}>
                     <Button variant="contained" onClick={previousPage}>Anterior</Button>
-                    <Button variant="contained" color="primary" size="large" onClick={() => setVerPDF(true)}>
-                        Ver PDF
-                    </Button>
                     <PDFDownloadLink
                         document={<ParticipantPdf formData={formData} selectors={data}/>}
                         fileName={formData.name + formData.surnames.replace(/\s+/g, '')}
@@ -205,11 +199,11 @@ const FormCreateConfirm = ({formData, previousPage}) => {
                 </Toolbar>
             </AppBar>
             <br/>
-            {verPDF ? (
+
                 <PDFViewer style={{width: "100%", height: "90vh"}}>
                     <ParticipantPdf formData={formData} selectors={data}/>
                 </PDFViewer>
-            ) : null}
+
             <Dialog open={open} onClose={handleCloseModal}>
                 <DialogTitle>Datos guardados correctamente</DialogTitle>
                 <DialogContent>
@@ -223,4 +217,4 @@ const FormCreateConfirm = ({formData, previousPage}) => {
     );
 };
 
-export default FormCreateConfirm;
+export default FormConfirm;

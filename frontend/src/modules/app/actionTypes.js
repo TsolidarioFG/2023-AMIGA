@@ -13,3 +13,4 @@ export const FIND_ALL_COHABITATION_COMPLETED = "project/catalog/findAllCohabitat
 export const FIND_ALL_PROGRAMS_COMPLETED = "project/catalog/findAllProgramsCompleted";
 export const FIND_ALL_EXCLUSIONS_COMPLETED = "project/catalog/findAllExclusionsCompleted";
 export const FIND_ALL_DEMANDS_COMPLETED = "project/catalog/findAllDemandsCompleted";
+export const FIND_ALL_CONTRACTS_COMPLETED = "project/catalog/findAllContractsCompleted";

@@ -1,5 +1,5 @@
 import React from "react";
-import './Confirm.css';
+import './Form/Confirm.css';
 import Typography from "@mui/material/Typography";
 import './Participant.css'
 

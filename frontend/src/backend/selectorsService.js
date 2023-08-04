@@ -35,3 +35,6 @@ export const findPrograms = (onSuccess) =>
 
 export const findDemands = (onSuccess) =>
     appFetch('/selector/demands', config('GET'), onSuccess);
+
+export const findContracts = (onSuccess) =>
+    appFetch('/selector/contracts', config('GET'), onSuccess);

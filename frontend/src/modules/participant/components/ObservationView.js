@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {TextField, Button, Card, CardContent, DialogTitle, DialogContent, DialogActions, Dialog} from '@mui/material';
+import {TextField, Button, Card, CardContent, DialogTitle, DialogActions, Dialog} from '@mui/material';
 import backend from "../../../backend";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -8,6 +8,10 @@ import * as actions from "../actions";
 import {BackLink} from "../../common";
 import Typography from "@mui/material/Typography";
 import "./Participant.css"
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
 
 const ObservationView = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -67,7 +71,18 @@ const ObservationView = () => {
         setOpenUpdate(false);
         navigate(-1);
     }
-
+    const getStringType = (type) => {
+        switch (type) {
+            case "GENERAL":
+                return ("General");
+            case "LEGAL":
+                return ("Juridico");
+            case "LABOUR":
+                return ("Laboral");
+            default:
+                return "";
+        }
+    };
 
     if (observation === null)
         return null;
@@ -89,6 +104,22 @@ const ObservationView = () => {
                             onChange={(e) => setObservation({...observation, date: e.target.value})}
                             required
                         />
+                        <FormControl className="item">
+                            <InputLabel id="type-label">Tipo</InputLabel>
+                            <Select
+                                id="type"
+                                labelId="type-label"
+                                label="Tipo"
+                                name="type"
+                                value={observation.observationType}
+                                onChange={(e) => setObservation({...observation, observationType: e.target.value})}
+                                required
+                            >
+                                <MenuItem value="GENERAL">General</MenuItem>
+                                <MenuItem value="LEGAL">Juridico</MenuItem>
+                                <MenuItem value="LABOUR">Laboral</MenuItem>
+                            </Select>
+                        </FormControl>
                         <TextField
                             className="item2"
                             label="Título"
@@ -116,13 +147,17 @@ const ObservationView = () => {
                             <CardContent>
                                 <div className="observation-header">
                                     <Typography variant="h5">
-                                        {observation.date.split("-").reverse().join("-")}
+                                        {"Fecha: " + observation.date.split("-").reverse().join("-")}
                                     </Typography>
                                     <div className="bigSpace"></div>
                                     <Typography variant="h5">
-                                        {observation.title}
+                                        {"Tipo: " + getStringType(observation.observationType) }
                                     </Typography>
                                 </div>
+                                <br/>
+                                <Typography variant="h5">
+                                    {"Titulo: " + observation.title}
+                                </Typography>
                                 <br/>
                                 <Typography variant="body1">
                                     {observation.text}
@@ -158,18 +193,12 @@ const ObservationView = () => {
             </div>
             <Dialog open={openUpdate} onClose={handleCloseModal}>
                 <DialogTitle>Datos guardados correctamente</DialogTitle>
-                <DialogContent>
-                    {/* Aquí puedes mostrar los detalles de los datos guardados */}
-                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseModal}>Aceptar</Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={openDelete} onClose={handleCloseDeleteModal}>
                 <DialogTitle>Eliminar la observación?</DialogTitle>
-                <DialogContent>
-                    {/* Aquí puedes mostrar los detalles de los datos guardados */}
-                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDeleteClick}>Confirmar</Button>
                 </DialogActions>

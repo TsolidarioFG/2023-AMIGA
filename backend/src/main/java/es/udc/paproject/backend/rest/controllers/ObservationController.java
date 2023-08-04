@@ -3,6 +3,8 @@ package es.udc.paproject.backend.rest.controllers;
 import static es.udc.paproject.backend.rest.dtos.ObservationConversor.toObservationDto;
 import static es.udc.paproject.backend.rest.dtos.ObservationConversor.toObservationDtos;
 
+import es.udc.paproject.backend.model.entities.Observation;
+import es.udc.paproject.backend.model.services.Block;
 import es.udc.paproject.backend.model.services.ObservationService;
 import es.udc.paproject.backend.rest.dtos.BlockDto;
 import es.udc.paproject.backend.rest.dtos.ObservationDto;
@@ -26,10 +28,9 @@ public class ObservationController {
             @RequestParam(required=false) Long idParticipant,
             @RequestParam(defaultValue="0") int page){
 
-        //Block<Observation> observationBlock = observationService.getObservations(idParticipant, page, 4);
+        Block<Observation> observationBlock = observationService.getObservations(idParticipant, page, 4, null, null, null);
 
-        //return ResponseEntity.ok(new BlockDto<>(toObservationDtos(observationBlock.getItems()), observationBlock.getExistMoreItems()));
-        return null;
+        return ResponseEntity.ok(new BlockDto<>(toObservationDtos(observationBlock.getItems()), observationBlock.getExistMoreItems()));
     }
 
     @PutMapping("/update")

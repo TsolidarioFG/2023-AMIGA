@@ -2,9 +2,9 @@ import React from 'react';
 
 import Button from '@mui/material/Button';
 import './Form.css';
-import RegistrarMenor from "./RegistrarMenor";
-import FormPage1Part3 from "./FormPage1Part3";
-import {HomeLink} from "../../common";
+import RegisterMinor from "./RegisterMinor";
+import FormPage2Part2 from "./FormPage2Part2";
+import {HomeLink} from "../../../common";
 
 
 const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
@@ -15,9 +15,9 @@ const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
                 <h1>Datos personales</h1>
                 <HomeLink></HomeLink>
             </div>
-            <RegistrarMenor formData={formData} setFormData={setFormData}></RegistrarMenor>
+            <RegisterMinor formData={formData} setFormData={setFormData}></RegisterMinor>
             <br/>
-            <FormPage1Part3 formData={formData} setFormData={setFormData}></FormPage1Part3>
+            <FormPage2Part2 formData={formData} setFormData={setFormData}></FormPage2Part2>
 
             <div className="center">
                 <Button variant="contained" onClick={previousPage}>Anterior</Button>

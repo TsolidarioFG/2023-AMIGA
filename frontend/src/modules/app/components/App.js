@@ -28,6 +28,7 @@ const App = () => {
         dispatch(actions.findAllExclusions());
         dispatch(actions.findAllPrograms());
         dispatch(actions.findAllDemands());
+        dispatch(actions.findAllContracts());
     });
 
     return (

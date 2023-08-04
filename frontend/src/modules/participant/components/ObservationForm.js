@@ -7,6 +7,10 @@ import * as actions from "../actions"
 import {Errors, HomeLink} from "../../common";
 import {useNavigate} from "react-router-dom";
 import { format } from 'date-fns';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const ObservationForm = () => {
 
@@ -17,6 +21,7 @@ const ObservationForm = () => {
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
+    const [type, setType] = useState('');
     const [backendErrors, setBackendErrors] = useState(null);
 
     const handleFechaChange = (date) => {
@@ -31,6 +36,10 @@ const ObservationForm = () => {
         setText(event.target.value);
     };
 
+    const handleTypeChange = (event) => {
+        setType(event.target.value);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -38,7 +47,8 @@ const ObservationForm = () => {
             date: date,
             title: title,
             text: text,
-            participant: participant.idParticipant
+            participant: participant.idParticipant,
+            observationType: type
         }
 
         backend.observation.createObservation(observation,
@@ -51,6 +61,7 @@ const ObservationForm = () => {
         setDate(format(new Date(), 'yyyy-MM-dd'));
         setTitle('');
         setText('');
+        setType('');
     };
 
     if(participant === null)
@@ -59,7 +70,7 @@ const ObservationForm = () => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="header">
-                <h3> {'Nueva observacion ' + participant.name + ' ' + participant.surnames}</h3>
+                <h3> {'Nueva atención ' + participant.name + ' ' + participant.surnames}</h3>
                 <HomeLink></HomeLink>
             </div>
             <div className="row-container">
@@ -73,6 +84,22 @@ const ObservationForm = () => {
                     InputLabelProps={{shrink: true}}
                     required
                 />
+                <FormControl className="item">
+                    <InputLabel id="type-label">Tipo</InputLabel>
+                    <Select
+                        id="type"
+                        labelId="type-label"
+                        label="Tipo"
+                        name="type"
+                        value={type}
+                        onChange={handleTypeChange}
+                        required
+                    >
+                        <MenuItem value="GENERAL">General</MenuItem>
+                        <MenuItem value="LEGAL">Juridico</MenuItem>
+                        <MenuItem value="LABOUR">Laboral</MenuItem>
+                    </Select>
+                </FormControl>
 
                 <TextField
                     className="item2"

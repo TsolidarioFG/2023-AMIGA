@@ -90,6 +90,7 @@ const FormPage1Part1 = ({ formData, setFormData }) => {
                     >
                         <MenuItem value="H">Hombre</MenuItem>
                         <MenuItem value="M">Mujer</MenuItem>
+                        <MenuItem value="NB">No binario</MenuItem>
                     </Select>
                 </FormControl>
 

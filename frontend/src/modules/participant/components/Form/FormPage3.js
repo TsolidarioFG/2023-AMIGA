@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import * as selectors from '../../app/selectors';
+import * as selectors from '../../../app/selectors';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
@@ -9,9 +9,9 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import './Form.css';
 import Autocomplete from "@mui/material/Autocomplete";
-import {Errors, HomeLink} from "../../common";
+import {Errors, HomeLink} from "../../../common";
 
-const FormPage2 = ({formData, setFormData, nextPage, previousPage}) => {
+const FormPage3 = ({formData, setFormData, nextPage, previousPage}) => {
     const studies = useSelector(selectors.getStudies);
     const employment = useSelector(selectors.getEmployments);
     const languages = useSelector(selectors.getLanguages);
@@ -402,4 +402,4 @@ const FormPage2 = ({formData, setFormData, nextPage, previousPage}) => {
     );
 };
 
-export default FormPage2;
+export default FormPage3;

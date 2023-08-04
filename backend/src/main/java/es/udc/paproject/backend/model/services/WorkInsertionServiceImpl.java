@@ -28,7 +28,7 @@ public class WorkInsertionServiceImpl implements WorkInsertionService{
     public WorkInsertion createWorkInsertion(WorkInsertionDto workInsertionDto) {
         return workInsertionDao.save(new WorkInsertion( workInsertionDto.getDate(), selectorService.getContract(workInsertionDto.getContract()),
                 workInsertionDto.getWorkField(), WorkingDay.valueOf(workInsertionDto.getWorkingDay()),
-                participantDao.findById(workInsertionDto.getParticipant()).orElse(null)));
+                participantDao.findById(workInsertionDto.getParticipant()).orElse(null), workInsertionDto.getSpecialContract()));
     }
 
     @Override
@@ -50,6 +50,7 @@ public class WorkInsertionServiceImpl implements WorkInsertionService{
         workInsertion.setContract(selectorService.getContract(workInsertionDto.getContract()));
         workInsertion.setWorkField(workInsertionDto.getWorkField());
         workInsertion.setWorkingDay(WorkingDay.valueOf(workInsertionDto.getWorkingDay()));
+        workInsertion.setSpecialContract(workInsertion.getSpecialContract());
 
         workInsertionDao.save(workInsertion);
         return workInsertion;

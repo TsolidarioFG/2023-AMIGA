@@ -1,14 +1,22 @@
-import React, {useState} from 'react';
-import FormPage2 from "./FormPage2";
+import React, {useEffect, useState} from 'react';
 import FormPage3 from "./FormPage3";
+import FormPage4 from "./FormPage4";
 import FormPage1 from "./FormPage1";
-import FormCreateConfirm from "./FormCreateConfirm";
-import FormPage1Continue from "./FormPage1Continue";
-import {format} from "date-fns";
+import * as selectors from "../../selectors"
+import {useDispatch, useSelector} from "react-redux";
+import FormPage1Continue from "./FormPage2";
+import backend from "../../../../backend";
+import FormConfirm from "./FormConfirm";
+import * as actions from "../../actions";
 
 const FormContainer = () => {
+    const dispatch = useDispatch();
+
+    const participant = useSelector(selectors.getParticipantData);
     const [currentPage, setCurrentPage] = useState(1);
     const [formData, setFormData] = useState({
+        idParticipant: null,
+        idAnnualData: null,
         name: '',
         surnames: '',
         dni: '',
@@ -26,13 +34,13 @@ const FormContainer = () => {
         interviewPi: '',
         kids: [],
         country: null,
-        date: format(new Date(), 'yyyy-MM-dd'),
-        returned: false,
+        date: '',
+        returned: '',
         nationalities: [],
         situation: '',
         studies: null,
         languages: [],
-        approved: '',
+        approved: false,
         demandedStudies: '',
         registered: false,
         dateRegister: '',
@@ -66,6 +74,14 @@ const FormContainer = () => {
         derivation: '',
     });
 
+    function backendCall(onSucess, onErrors) {
+        backend.participant.updateParticipant(
+            formData, data => {
+                onSucess();
+                dispatch(actions.findParticipantCompleted(data));
+            }, onErrors);
+    }
+
     const nextPage = () => {
         setCurrentPage(currentPage + 1);
     };
@@ -74,6 +90,15 @@ const FormContainer = () => {
         setCurrentPage(currentPage - 1);
     };
 
+    useEffect(() => {
+            for (const attribute in participant) {
+                if (participant.hasOwnProperty(attribute) && formData.hasOwnProperty(attribute)) {
+                    formData[attribute] = participant[attribute];
+                }
+            }
+
+        }, [participant]
+    )
     const renderPage = () => {
         switch (currentPage) {
             case 1:
@@ -84,7 +109,6 @@ const FormContainer = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                     />
-
                 );
             case 2:
                 return (
@@ -99,34 +123,29 @@ const FormContainer = () => {
                 );
             case 3:
                 return (
-
-                    <FormPage2
-                        formData={formData}
-                        setFormData={setFormData}
-                        nextPage={nextPage}
-                        previousPage={previousPage}
-                    />
-
-                );
-            case 4:
-                return (
-
                     <FormPage3
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
                     />
-
+                );
+            case 4:
+                return (
+                    <FormPage4
+                        formData={formData}
+                        setFormData={setFormData}
+                        nextPage={nextPage}
+                        previousPage={previousPage}
+                    />
                 );
             case 5:
                 return (
-
-                    <FormCreateConfirm
+                    <FormConfirm
                         formData={formData}
                         previousPage={previousPage}
-                    ></FormCreateConfirm>
-
+                        submitAction={backendCall}
+                    ></FormConfirm>
                 );
             default:
                 return null;

@@ -12,6 +12,7 @@ public class WorkInsertionDto {
     private String workField;
     private String workingDay;
     private Long participant;
+    private String specialContract;
 
     public WorkInsertionDto(WorkInsertion workInsertion) {
         this.id = workInsertion.getId();
@@ -20,6 +21,7 @@ public class WorkInsertionDto {
         this.workField = workInsertion.getWorkField();
         this.workingDay = workInsertion.getWorkingDay().toString();
         this.participant = workInsertion.getParticipant().getId();
+        this.specialContract = workInsertion.getSpecialContract();
     }
 
     public Long getId() {
@@ -68,5 +70,13 @@ public class WorkInsertionDto {
 
     public void setParticipant(Long participant) {
         this.participant = participant;
+    }
+
+    public String getSpecialContract() {
+        return specialContract;
+    }
+
+    public void setSpecialContract(String specialContract) {
+        this.specialContract = specialContract;
     }
 }

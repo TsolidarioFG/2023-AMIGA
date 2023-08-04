@@ -801,3 +801,6 @@ INSERT INTO Cohabitation (name) VALUES ('Pareja'),('Familia monoparental'),
 insert into Employment (name) values ('Desempleado/a'),('Desempleado/a de larga duración'),
                                      ('Inactiva/o'),('Inactiva/o, integrada/o en los sistemas de educación o formación'),
                                      ('Ocupada/o'),('Subempleado/a por insuficiencia de horas');
+
+insert into Contract (name) values ('Contrato Indefinido'), ('Contrato Temporal'), ('Contrato Formación en Alternancia'),
+                                   ('Contrato Formativo para la Obtención de la Práctica Profesional'), ('Otros'), ('Alta Autónomo')

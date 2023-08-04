@@ -9,14 +9,35 @@
 
 ## Database creation
 
-Se necesita un contenedor con MySQL 8. En caso de no contar con uno ejecutar el siguiente comando para crearlo:
+Se necesita crear dos contenedores con MySQL 8. Se recomienda una de las dos siguientes opciones:
 
-### Podman
-Se aconseja utilizar Podman Desktop para trabajar con contenedores. [Enlace de descarga](https://podman-desktop.io/docs/Installation)
+- Docker Desckop. [Enlace de descarga](https://www.docker.com/products/docker-desktop/)
+
+- Podman Desktop. [Enlace de descarga](https://podman-desktop.io/docs/Installation)
+
+### Con Docker
+
+```bash
+docker run -p 3306:3306 --name amiga -e MYSQL_ROOT_PASSWORD=amiga -d mysql:8
+```
+Para los tests.
+
+```bash
+docker run -p 3307:3306 --name amiga-test -e MYSQL_ROOT_PASSWORD=amiga -d mysql:8
+```
+
+Para inicializar los datos de la bbdd
+```bash
+cmd /c "docker exec -i amiga mysql --password=amiga < dump-amiga.sql"
+cmd /c "docker exec -i amiga-test mysql --password=amiga < dump-amiga.sql"
+```
+
+### Con Podman
+
 ```bash
 podman run -p 3306:3306 --name amiga -e MYSQL_ROOT_PASSWORD=amiga -d mysql:8
 ```
-También se necesita otro contenedor con MySQL 8 para los tests.
+Para los tests.
 
 ```bash
 podman run -p 3307:3306 --name amiga-test -e MYSQL_ROOT_PASSWORD=amiga -d mysql:8
@@ -25,12 +46,12 @@ podman run -p 3307:3306 --name amiga-test -e MYSQL_ROOT_PASSWORD=amiga -d mysql:
 Para inicializar los datos de la bbdd 
 ```bash
 cmd /c "podman exec -i amiga mysql --password=amiga < dump-amiga.sql"
+cmd /c "podman exec -i amiga-test mysql --password=amiga < dump-amiga.sql"
 ```
 ## Run
 
 ```
 cd backend
-mvn sql:execute (only first time to create tables)
 mvn spring-boot:run
 
 cd frontend

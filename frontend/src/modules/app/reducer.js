@@ -16,7 +16,8 @@ const initialState = {
     cohabitations: null,
     exclusions: null,
     programs: null,
-    demands: null
+    demands: null,
+    contracts : null
 };
 
 const error = (state = initialState.error, action) => {
@@ -200,6 +201,20 @@ const demands = (state = initialState.demands, action) => {
 
         case actionTypes.FIND_ALL_DEMANDS_COMPLETED:
             return action.demands;
+
+        default:
+            return state;
+
+    }
+
+}
+
+const contracts = (state = initialState.contracts, action) => {
+
+    switch (action.type) {
+
+        case actionTypes.FIND_ALL_CONTRACTS_COMPLETED:
+            return action.contracts;
 
         default:
             return state;
