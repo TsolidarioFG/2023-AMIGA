@@ -37,7 +37,7 @@
         <surefireMavenPlugin.version>2.22.2</surefireMavenPlugin.version>
         <sqlPlugin.version>1.5</sqlPlugin.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
-        <fileupload-version>1.5</fileupload-version>
+        <apache-poi-version>5.2.3</apache-poi-version>
         
     </properties>
     
@@ -109,15 +109,15 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${fileupload-version}</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache-poi-version}</version> <!-- Actualiza a la última versión disponible -->
         </dependency>
 
         <dependency>
-            <groupId>net.sourceforge.jexcelapi</groupId>
-            <artifactId>jxl</artifactId>
-            <version>${net.sourceforge.jexcelapi.version}</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache-poi-version}</version>
         </dependency>
     </dependencies>
 

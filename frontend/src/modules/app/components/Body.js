@@ -9,7 +9,7 @@ import {
     ParticipantDetails,
     EditParticipant,
     ParticipantData,
-    NewAnnualData, ObservationForm, ObservationView
+    NewAnnualData, ObservationForm, ObservationView, WorkInsertion
 } from '../../participant';
 import "./Body.css"
 import users from '../../users';
@@ -32,6 +32,7 @@ const Body = () => {
                 <Route path="/participant/newAnnualData" element={<NewAnnualData/>}></Route>
                 <Route path="/participant/observationForm" element={<ObservationForm/>}></Route>
                 <Route path="/participant/observationView/:id" element={<ObservationView/>}></Route>
+                <Route path="/participant/workInsertion/:id" element={<WorkInsertion/>}></Route>
                 {loggedIn && <Route path="/users/update-profile" element={<UpdateProfile/>}/>}
                 {loggedIn && <Route path="/users/change-password" element={<ChangePassword/>}/>}
                 {loggedIn && <Route path="/users/logout" element={<Logout/>}/>}

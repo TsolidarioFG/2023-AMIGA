@@ -11,6 +11,7 @@ export {default as EditParticipant} from './components/Form/EditParticipant'
 export {default as NewAnnualData} from './components/Form/NewAnnualData'
 export {default as ObservationForm} from './components/ObservationForm'
 export {default as ObservationView} from './components/ObservationView'
+export {default as WorkInsertion} from './components/WorkInsertion'
 
 
 // eslint-disable-next-line import/no-anonymous-default-export

@@ -1,5 +1,7 @@
 package es.udc.paproject.backend.rest.controllers;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import es.udc.paproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.paproject.backend.model.services.ParticipantService;
 import es.udc.paproject.backend.rest.dtos.ParticipantDto;
@@ -8,16 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -66,30 +68,97 @@ public class ParticipantController {
             return ResponseEntity.ok(participantDto1);
     }
 
-    @GetMapping("/Excel")
-    ResponseEntity<Resource> getExcel(LocalDate startDate, LocalDate endDate) {
-       // roomService.getExcel(officeId.longValue(), date);
+    @GetMapping("/downloadExcel")
+    public ResponseEntity<Resource> downloadExcel() {
+        String[] headers = {"fecha", "programa", "situacion", "retornado", "pi", "dni/nie/pas", "nombre", "apellido1", "apellido2", "edad",
+                "fecha nacimiento", "genero", "pais origen", "nacionalidad", "municipio", "provincia", "telefono", "correo",
+                "nivel de estudios", "situacion laboral", "numero inserciones"};
 
-        Path path = Paths.get("./resources/excel/Excel.xls");
-        ByteArrayResource resource = null;
-        try {
-            resource = new ByteArrayResource(Files.readAllBytes(path));
-        } catch ( IOException e) {
-            throw new RuntimeException(e);
+        List<List<Object>> data = new ArrayList<>();
+
+        // Example data, replace this with your actual data
+        for (int i = 0; i < 10; i++) {
+            List<Object> rowData = new ArrayList<>();
+            rowData.add("2023-08-05");
+            rowData.add("Programa " + (i + 1));
+            rowData.add("Situación " + (i + 1));
+            rowData.add(true);
+            rowData.add("PI " + (i + 1));
+            rowData.add("DNI/NIE/PAS " + (i + 1));
+            rowData.add("Nombre " + (i + 1));
+            rowData.add("Apellido1 " + (i + 1));
+            rowData.add("Apellido2 " + (i + 1));
+            rowData.add(30 + i);
+            rowData.add("1993-01-01");
+            rowData.add("Género " + (i + 1));
+            rowData.add("País " + (i + 1));
+            rowData.add("Nacionalidad " + (i + 1));
+            rowData.add("Municipio " + (i + 1));
+            rowData.add("Provincia " + (i + 1));
+            rowData.add("123456789");
+            rowData.add("correo" + (i + 1) + "@example.com");
+            rowData.add("Nivel de estudios " + (i + 1));
+            rowData.add("Situación laboral " + (i + 1));
+            rowData.add(i + 1);
+
+            data.add(rowData);
         }
 
-        //HEADERS
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=estadisticas.xls");
+        try (Workbook workbook = WorkbookFactory.create(true)) {
+            Sheet sheet = workbook.createSheet("Datos");
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(resource.contentLength())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
 
+            // Create data rows
+            int rowIndex = 1;
+            for (List<Object> rowData : data) {
+                Row row = sheet.createRow(rowIndex++);
+                int cellIndex = 0;
+                for (Object value : rowData) {
+                    Cell cell = row.createCell(cellIndex++);
+                    if (value instanceof String) {
+                        cell.setCellValue((String) value);
+                    } else if (value instanceof Boolean) {
+                        cell.setCellValue((Boolean) value);
+                    } else if (value instanceof Integer) {
+                        cell.setCellValue((Integer) value);
+                    }
+                    // You can add more conditions to handle other data types if needed
+                }
+            }
+         
+            // Write the Excel data to a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+            
+            
+            String filePath = "data.xlsx";
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                workbook.write(fileOut);
+            }
+
+            // Create a ByteArrayResource from the byte array
+            Resource excelResource = new ByteArrayResource(excelBytes);
+
+            HttpHeaders head = new HttpHeaders();
+            head.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            head.setContentDispositionFormData("attachment", "data.xlsx");
+
+            return new ResponseEntity<>(excelResource, head, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

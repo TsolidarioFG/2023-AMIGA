@@ -1,13 +1,19 @@
 import React from 'react';
+import { useSelector } from "react-redux";
 import {List, ListItem, ListItemIcon, ListItemText, Paper} from '@mui/material';
 import {AddCircle, NoteAdd, Visibility, WorkHistory} from '@mui/icons-material';
+import * as selectors from "../selectors"
 import "./Participant.css";
 import {useNavigate} from "react-router-dom";
 
 const Menu = ({user}) => {
     const navigate = useNavigate();
     const date = new Date();
+    const participant = useSelector(selectors.getParticipantData);
+
+
     const handleEdit = () => {
+      navigate('/participant/workInsertion/' + participant.id)
     }
 
     const handleViewData = () => {
