@@ -20,29 +20,29 @@ public class WorkInsertionController {
     private WorkInsertionService workInsertionService;
 
     @PostMapping("/create")
-    ResponseEntity<WorkInsertionDto> createObsevation(@RequestBody WorkInsertionDto workInsertionDto) {
+    ResponseEntity<WorkInsertionDto> createWorkInsertion(@RequestBody WorkInsertionDto workInsertionDto) {
         return ResponseEntity.ok(toWorkInsertionDto(workInsertionService.createWorkInsertion(workInsertionDto)));
     }
 
     @GetMapping("/get")
-    ResponseEntity<BlockDto<WorkInsertionDto>> getObservations(
+    ResponseEntity<BlockDto<WorkInsertionDto>> getWorkInsertion(
             @RequestParam(required = false) Long idParticipant,
             @RequestParam(defaultValue = "0") int page) {
 
-        Block<WorkInsertion> workInsertionBlock = workInsertionService.getWorkInsertions(idParticipant, page, 4);
+        Block<WorkInsertion> workInsertionBlock = workInsertionService.getWorkInsertions(idParticipant, page, 100);
 
         return ResponseEntity.ok(new BlockDto<>(toWorkInsertionDtos(workInsertionBlock.getItems()), workInsertionBlock.getExistMoreItems()));
     }
 
     @PutMapping("/update")
-    ResponseEntity<WorkInsertionDto> updateObservation(@RequestBody WorkInsertionDto workInsertionDto) {
+    ResponseEntity<WorkInsertionDto> updateWorkInsertion(@RequestBody WorkInsertionDto workInsertionDto) {
         return ResponseEntity.ok(toWorkInsertionDto(workInsertionService.updateWorkInsertion(workInsertionDto)));
     }
 
     @DeleteMapping("/delete")
-    ResponseEntity<Void> deleteObservation(@RequestParam Long idObservation) {
+    ResponseEntity<Void> deleteWorkInsertion(@RequestParam Long idWorkInsertion) {
 
-        workInsertionService.deleteWorkInsertion(idObservation);
+        workInsertionService.deleteWorkInsertion(idWorkInsertion);
         return ResponseEntity.noContent().build();
     }
 }

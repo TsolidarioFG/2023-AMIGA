@@ -13,7 +13,7 @@ const Menu = ({user}) => {
 
 
     const handleEdit = () => {
-      navigate('/participant/workInsertion/' + participant.id)
+      navigate('/participant/workInsertion/' + participant.idParticipant)
     }
 
     const handleViewData = () => {

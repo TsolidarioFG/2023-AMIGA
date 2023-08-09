@@ -50,7 +50,7 @@ public class WorkInsertionServiceImpl implements WorkInsertionService{
         workInsertion.setContract(selectorService.getContract(workInsertionDto.getContract()));
         workInsertion.setWorkField(workInsertionDto.getWorkField());
         workInsertion.setWorkingDay(WorkingDay.valueOf(workInsertionDto.getWorkingDay()));
-        workInsertion.setSpecialContract(workInsertion.getSpecialContract());
+        workInsertion.setSpecialContract(workInsertionDto.getSpecialContract());
 
         workInsertionDao.save(workInsertion);
         return workInsertion;

@@ -16,6 +16,9 @@ public class Observation {
     private String text;
     @Enumerated(EnumType.STRING)
     private ObservationType observationType;
+    @ManyToOne
+    @JoinColumn(name = "participant_id")
+    private Participant participant;
 
     public Observation(LocalDate date, String title, String text, Participant participant, ObservationType observationType) {
         this.date = date;
@@ -24,10 +27,6 @@ public class Observation {
         this.participant = participant;
         this.observationType = observationType;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
 
     public Observation() {
 

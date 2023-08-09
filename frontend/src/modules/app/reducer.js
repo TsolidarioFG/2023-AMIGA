@@ -236,7 +236,8 @@ const reducer = combineReducers({
     cohabitations,
     exclusions,
     programs,
-    demands
+    demands,
+    contracts
 });
 
 export default reducer;

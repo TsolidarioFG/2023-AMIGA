@@ -22,4 +22,13 @@ public interface ObservationDao extends PagingAndSortingRepository<Observation, 
                                          @Param("startDate") LocalDate startDate,
                                          @Param("endDate") LocalDate endDate,
                                          @Param("participant") Participant participant, Pageable pageable);
+
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Observation o " +
+            "WHERE o.participant = :participant " +
+            "AND o.date BETWEEN :startDate AND :endDate")
+    boolean existsObservationParticipant(
+            @Param("participant") Participant participant,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }

@@ -3,7 +3,9 @@ package es.udc.paproject.backend.model.services;
 import es.udc.paproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.paproject.backend.rest.dtos.ParticipantDto;
 import es.udc.paproject.backend.rest.dtos.ParticipantSummaryDto;
+import es.udc.paproject.backend.rest.dtos.StatisticsDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +22,6 @@ public interface ParticipantService {
     ParticipantDto saveAnnualData(ParticipantDto participantDto);
 
     ParticipantDto updateParticipant(ParticipantDto participantDto);
+
+    List<StatisticsDto> getExcelData(LocalDate startDate, LocalDate endDate);
 }

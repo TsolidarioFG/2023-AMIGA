@@ -66,4 +66,13 @@
     display: flex;
     justify-content: space-between;
 }
+.modal-paper {
+    min-width: 50%;
+}
+
+
+
+
+
+
 

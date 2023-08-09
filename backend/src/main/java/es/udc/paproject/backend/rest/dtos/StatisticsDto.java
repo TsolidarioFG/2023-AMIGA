@@ -5,7 +5,7 @@ import es.udc.paproject.backend.model.entities.Participant;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
+import java.util.Map;
 
 public class StatisticsDto {
 
@@ -28,8 +28,12 @@ public class StatisticsDto {
   private int numberInsertion;
   private String phone;
   private String email;
+  Map<String, Integer> exclusionFactorCountMen;
+  Map<String, Integer> exclusionFactorCountWoman;
+  Map<String, Integer> nationalitiesCountMen;
+  Map<String, Integer> nationalitiesCountWoman;
 
-  private StatisticsDto(Participant participant, AnnualData annualData) {
+  public StatisticsDto(Participant participant, AnnualData annualData) {
     this.date = annualData.getDate();
     this.programs = annualData.getDemand().getName();
     this.situation = annualData.getSituation().toString();
@@ -49,7 +53,7 @@ public class StatisticsDto {
     this.birthdate = participant.getBirthDate();
 
     LocalDate currentDate = LocalDate.now();
-    Period period = Period.between(participant.getBirthDate(), currentDate);
+    Period period = Period.between(currentDate, participant.getBirthDate());
     this.year = period.getYears();
     
     this.sex = participant.getGender().toString();
@@ -57,9 +61,9 @@ public class StatisticsDto {
     this.municipality = annualData.getMunicipality().getName();
     this.province = annualData.getProvince().getName();
     
-    if(participant.getDni() != null)
+    if(participant.getDni() != null && participant.getDni().length() > 0)
       this.document = participant.getDni();
-    else if(participant.getNie() != null)
+    else if(participant.getNie() != null && participant.getNie().length() > 0)
       this.document = participant.getNie();
     else 
       this.document = participant.getPas();
@@ -71,7 +75,39 @@ public class StatisticsDto {
     this.email = participant.getEmail();
     
   }
-  
+
+  public Map<String, Integer> getExclusionFactorCountMen() {
+    return exclusionFactorCountMen;
+  }
+
+  public void setExclusionFactorCountMen(Map<String, Integer> exclusionFactorCountMen) {
+    this.exclusionFactorCountMen = exclusionFactorCountMen;
+  }
+
+  public Map<String, Integer> getNationalitiesCountMen() {
+    return nationalitiesCountMen;
+  }
+
+  public void setNationalitiesCountMen(Map<String, Integer> nationalitiesCountMen) {
+    this.nationalitiesCountMen = nationalitiesCountMen;
+  }
+
+  public Map<String, Integer> getExclusionFactorCountWoman() {
+    return exclusionFactorCountWoman;
+  }
+
+  public void setExclusionFactorCountWoman(Map<String, Integer> exclusionFactorCountWoman) {
+    this.exclusionFactorCountWoman = exclusionFactorCountWoman;
+  }
+
+  public Map<String, Integer> getNationalitiesCountWoman() {
+    return nationalitiesCountWoman;
+  }
+
+  public void setNationalitiesCountWoman(Map<String, Integer> nationalitiesCountWoman) {
+    this.nationalitiesCountWoman = nationalitiesCountWoman;
+  }
+
   public LocalDate getDate() {
     return date;
   }

@@ -1,24 +1,15 @@
 package es.udc.paproject.backend.model.services;
 
-import es.udc.paproject.backend.model.daos.AnnualDataDao;
-import es.udc.paproject.backend.model.daos.KidDao;
-import es.udc.paproject.backend.model.daos.ParticipantDao;
-import es.udc.paproject.backend.model.daos.Participant_ProgramDao;
+import es.udc.paproject.backend.model.daos.*;
 import es.udc.paproject.backend.model.entities.*;
 import es.udc.paproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.paproject.backend.model.mapper.ParticipantMapper;
-import es.udc.paproject.backend.rest.dtos.KidDto;
-import es.udc.paproject.backend.rest.dtos.ParticipantDto;
-import es.udc.paproject.backend.rest.dtos.ParticipantSummaryDto;
-import es.udc.paproject.backend.rest.dtos.Participant_ProgramDto;
+import es.udc.paproject.backend.rest.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -33,6 +24,12 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Autowired
     private KidDao kidDao;
+
+    @Autowired
+    private ObservationDao observationDao;
+
+    @Autowired
+    private WorkInsertionDao workInsertionDao;
 
     @Autowired
     private SelectorServiceImpl selectorService;
@@ -93,6 +90,8 @@ public class ParticipantServiceImpl implements ParticipantService {
             participantProgramDao.save(new Participant_program(annualDataSaved, selectorService.getProgram(program.getProgram()), program.isItinerary()));
         }
 
+        observationDao.save(new Observation(LocalDate.now(), "Primera acogida", participantDto.getObservation(), participant, ObservationType.GENERAL));
+
         return participantMapper.toParticipantDto(participantSaved, annualDataSaved);
     }
 
@@ -120,6 +119,8 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         participantDao.save(participant);
         annualDataDao.save(annualData);
+        observationDao.save(new Observation(LocalDate.now(), "Acogida año " + LocalDate.now().getYear(), participantDto.getObservation(), participant, ObservationType.GENERAL));
+
         return participantMapper.toParticipantDto(participant, annualDataDao.save(annualData));
     }
 
@@ -143,7 +144,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         Set<Participant_program> participantProgramList = annualData.getPrograms();
 
         for (Participant_program program : participantProgramList) {
-            if(!isPresent(participantDto.getPrograms(), program.getId())){
+            if (!isPresent(participantDto.getPrograms(), program.getId())) {
                 participantProgramDao.deleteById(program.getId());
             }
         }
@@ -159,9 +160,70 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         participantDao.save(participant);
         annualDataDao.save(annualData);
+        observationDao.save(new Observation(LocalDate.now(), "Actualización datos personales", participantDto.getObservation(), participant, ObservationType.GENERAL));
+
         return participantMapper.toParticipantDto(participant, annualData);
     }
-    
+
+    @Override
+    public List<StatisticsDto> getExcelData(LocalDate startDate, LocalDate endDate) {
+
+        List<Participant> participantList = participantDao.findByYearRange(startDate.getYear(), endDate.getYear());
+        List<StatisticsDto> statisticsDtos = new ArrayList<>();
+
+        Map<String, Integer> exclusionFactorCountMen = new HashMap<>();
+        Map<String, Integer> exclusionFactorCountWoman = new HashMap<>();
+        Map<String, Integer> nationalitiesCountMen = new HashMap<>();
+        Map<String, Integer> nationalitiesCountWoman = new HashMap<>();
+
+        for (Participant participant : participantList) {
+            if (observationDao.existsObservationParticipant(participant, startDate, endDate)) {
+
+                int lastYearInRange = 0;
+                for (int year : participant.getYearList()) {
+                    if (year <= endDate.getYear() && year > lastYearInRange) {
+                        lastYearInRange = year;
+                    }
+                }
+
+                AnnualData annualData = annualDataDao.getAnnualData(participant.getId(), lastYearInRange);
+
+                StatisticsDto statisticsDto = new StatisticsDto(participant, annualData);
+                statisticsDto.setNumberInsertion(workInsertionDao.countWorkInsertions(participant, startDate, endDate));
+                statisticsDtos.add(statisticsDto);
+
+                Set<ExclusionFactor> exclusionFactors = annualData.getExclusionFactors();
+
+                for (ExclusionFactor exclusionFactor : exclusionFactors) {
+                    String factorName = exclusionFactor.getName();
+                    if (participant.getGender() == Gender.H) {
+                        exclusionFactorCountMen.put(factorName, exclusionFactorCountMen.getOrDefault(factorName, 0) + 1);
+                    } else if (participant.getGender() == Gender.M) {
+                        exclusionFactorCountWoman.put(factorName, exclusionFactorCountWoman.getOrDefault(factorName, 0) + 1);
+                    }
+                }
+
+                Set<Country> nationalities = annualData.getNationalities();
+
+                for (Country nationality : nationalities) {
+                    String nationalityName = nationality.getName();
+                    if (participant.getGender() == Gender.H) {
+                        nationalitiesCountMen.put(nationalityName, nationalitiesCountMen.getOrDefault(nationalityName, 0) + 1);
+                    } else if (participant.getGender() == Gender.M) {
+                        nationalitiesCountWoman.put(nationalityName, nationalitiesCountWoman.getOrDefault(nationalityName, 0) + 1);
+                    }
+                }
+            }
+        }
+        if (!statisticsDtos.isEmpty()) {
+            statisticsDtos.get(0).setExclusionFactorCountMen(exclusionFactorCountMen);
+            statisticsDtos.get(0).setExclusionFactorCountWoman(exclusionFactorCountWoman);
+            statisticsDtos.get(0).setNationalitiesCountMen(nationalitiesCountMen);
+            statisticsDtos.get(0).setNationalitiesCountWoman(nationalitiesCountWoman);
+        }
+        return statisticsDtos;
+    }
+
     private boolean isPresent(List<Participant_ProgramDto> list, Long id) {
         for (Participant_ProgramDto item : list) {
             if (Objects.equals(item.getId(), id)) {

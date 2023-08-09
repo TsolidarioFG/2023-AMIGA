@@ -1,5 +1,6 @@
 package es.udc.paproject.backend.rest.controllers;
 
+import es.udc.paproject.backend.rest.dtos.StatisticsDto;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import es.udc.paproject.backend.model.exceptions.InstanceNotFoundException;
@@ -9,6 +10,7 @@ import es.udc.paproject.backend.rest.dtos.ParticipantSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/participant")
@@ -49,60 +54,33 @@ public class ParticipantController {
     }
 
     @PostMapping("/save")
-    ResponseEntity<ParticipantDto> saveParticipant(@RequestBody @Validated ParticipantDto participantDto){
+    ResponseEntity<ParticipantDto> saveParticipant(@RequestBody @Validated ParticipantDto participantDto) {
         return ResponseEntity.ok(participantService.saveParticipant(participantDto));
     }
 
     @PostMapping("/saveAnnualData")
-    ResponseEntity<ParticipantDto> newAnnualData(@RequestBody @Validated ParticipantDto participantDto){
+    ResponseEntity<ParticipantDto> newAnnualData(@RequestBody @Validated ParticipantDto participantDto) {
         return ResponseEntity.ok(participantService.saveAnnualData(participantDto));
     }
 
     @PutMapping("/update")
-    ResponseEntity<ParticipantDto> updateParticipant(@RequestBody ParticipantDto participantDto){
+    ResponseEntity<ParticipantDto> updateParticipant(@RequestBody ParticipantDto participantDto) {
         ParticipantDto participantDto1 = participantService.updateParticipant(participantDto);
 
-        if(participantDto1 == null)
+        if (participantDto1 == null)
             return ResponseEntity.notFound().build();
         else
             return ResponseEntity.ok(participantDto1);
     }
 
     @GetMapping("/downloadExcel")
-    public ResponseEntity<Resource> downloadExcel() {
-        String[] headers = {"fecha", "programa", "situacion", "retornado", "pi", "dni/nie/pas", "nombre", "apellido1", "apellido2", "edad",
-                "fecha nacimiento", "genero", "pais origen", "nacionalidad", "municipio", "provincia", "telefono", "correo",
+    public ResponseEntity<Resource> downloadExcel(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                  @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        List<StatisticsDto> statisticsDtos = participantService.getExcelData(startDate, endDate);
+
+        String[] headers = {"fecha", "programa", "situacion", "retornado", "pi", "dni/nie/pas", "nombre", "apellidos", "edad",
+                "fecha nacimiento", "genero", "pais origen", "municipio", "provincia", "telefono", "correo",
                 "nivel de estudios", "situacion laboral", "numero inserciones"};
-
-        List<List<Object>> data = new ArrayList<>();
-
-        // Example data, replace this with your actual data
-        for (int i = 0; i < 10; i++) {
-            List<Object> rowData = new ArrayList<>();
-            rowData.add("2023-08-05");
-            rowData.add("Programa " + (i + 1));
-            rowData.add("Situación " + (i + 1));
-            rowData.add(true);
-            rowData.add("PI " + (i + 1));
-            rowData.add("DNI/NIE/PAS " + (i + 1));
-            rowData.add("Nombre " + (i + 1));
-            rowData.add("Apellido1 " + (i + 1));
-            rowData.add("Apellido2 " + (i + 1));
-            rowData.add(30 + i);
-            rowData.add("1993-01-01");
-            rowData.add("Género " + (i + 1));
-            rowData.add("País " + (i + 1));
-            rowData.add("Nacionalidad " + (i + 1));
-            rowData.add("Municipio " + (i + 1));
-            rowData.add("Provincia " + (i + 1));
-            rowData.add("123456789");
-            rowData.add("correo" + (i + 1) + "@example.com");
-            rowData.add("Nivel de estudios " + (i + 1));
-            rowData.add("Situación laboral " + (i + 1));
-            rowData.add(i + 1);
-
-            data.add(rowData);
-        }
 
         try (Workbook workbook = WorkbookFactory.create(true)) {
             Sheet sheet = workbook.createSheet("Datos");
@@ -121,32 +99,146 @@ public class ParticipantController {
 
             // Create data rows
             int rowIndex = 1;
-            for (List<Object> rowData : data) {
+            for (StatisticsDto statisticsDto : statisticsDtos) {
                 Row row = sheet.createRow(rowIndex++);
+
                 int cellIndex = 0;
-                for (Object value : rowData) {
-                    Cell cell = row.createCell(cellIndex++);
-                    if (value instanceof String) {
-                        cell.setCellValue((String) value);
-                    } else if (value instanceof Boolean) {
-                        cell.setCellValue((Boolean) value);
-                    } else if (value instanceof Integer) {
-                        cell.setCellValue((Integer) value);
-                    }
-                    // You can add more conditions to handle other data types if needed
-                }
+
+                Cell cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getPrograms());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getSituation());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getReturned());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getPi());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getDocument());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getName());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getSurnames());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getYear());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getBirthdate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getSex());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getCountry());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getMunicipality());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getProvince());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getPhone());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getEmail());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getStudies());
+                cell = row.createCell(cellIndex++);
+                cell.setCellValue(statisticsDto.getWorkSituation());
+                cell = row.createCell(cellIndex);
+                cell.setCellValue(statisticsDto.getNumberInsertion());
             }
-         
+
+            // parte nacionalidades
+
+            rowIndex += 3;
+
+            Row row = sheet.createRow(rowIndex++);
+            Cell cell = row.createCell(0);
+            cell.setCellValue("Hombres");
+            cell.setCellStyle(headerCellStyle);
+            cell = row.createCell(4);
+            cell.setCellValue("Mujeres");
+            cell.setCellStyle(headerCellStyle);
+            row = sheet.createRow(rowIndex++);
+            cell = row.createCell(0);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Nacionalidad");
+            cell = row.createCell(1);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Número");
+            cell = row.createCell(4);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Nacionalidad");
+            cell = row.createCell(5);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Número");
+
+            int memoryIndex = rowIndex;
+            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getNationalitiesCountMen().entrySet()) {
+                row = sheet.createRow(rowIndex++);
+                cell = row.createCell(0);
+                cell.setCellValue(entry.getKey());
+                cell = row.createCell(1);
+                cell.setCellValue(entry.getValue());
+            }
+
+            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getNationalitiesCountWoman().entrySet()) {
+                row = sheet.createRow(memoryIndex++);
+                cell = row.createCell(4);
+                cell.setCellValue(entry.getKey());
+                cell = row.createCell(5);
+                cell.setCellValue(entry.getValue());
+            }
+
+            // parte factores exclusion
+
+            rowIndex += 3;
+
+            row = sheet.createRow(rowIndex++);
+            cell = row.createCell(0);
+            cell.setCellValue("Hombres");
+            cell.setCellStyle(headerCellStyle);
+            cell = row.createCell(4);
+            cell.setCellValue("Mujeres");
+            cell.setCellStyle(headerCellStyle);
+            row = sheet.createRow(rowIndex++);
+            cell = row.createCell(0);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Factor exclusión");
+            cell = row.createCell(1);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Número");
+            cell = row.createCell(4);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Factor exclusión");
+            cell = row.createCell(5);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue("Número");
+
+            memoryIndex = rowIndex;
+            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getExclusionFactorCountMen().entrySet()) {
+                row = sheet.createRow(rowIndex++);
+                cell = row.createCell(0);
+                cell.setCellValue(entry.getKey());
+                cell = row.createCell(1);
+                cell.setCellValue(entry.getValue());
+            }
+
+            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getExclusionFactorCountWoman().entrySet()) {
+                row = sheet.createRow(memoryIndex++);
+                cell = row.createCell(4);
+                cell.setCellValue(entry.getKey());
+                cell = row.createCell(5);
+                cell.setCellValue(entry.getValue());
+            }
+
+
+
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
             // Write the Excel data to a byte array
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
             byte[] excelBytes = outputStream.toByteArray();
-            
-            
-            String filePath = "data.xlsx";
-            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-                workbook.write(fileOut);
-            }
 
             // Create a ByteArrayResource from the byte array
             Resource excelResource = new ByteArrayResource(excelBytes);
@@ -156,7 +248,8 @@ public class ParticipantController {
             head.setContentDispositionFormData("attachment", "data.xlsx");
 
             return new ResponseEntity<>(excelResource, head, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

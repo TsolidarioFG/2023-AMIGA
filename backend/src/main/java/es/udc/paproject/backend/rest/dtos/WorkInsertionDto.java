@@ -14,6 +14,9 @@ public class WorkInsertionDto {
     private Long participant;
     private String specialContract;
 
+    public WorkInsertionDto() {
+    }
+
     public WorkInsertionDto(WorkInsertion workInsertion) {
         this.id = workInsertion.getId();
         this.date =workInsertion.getDate();

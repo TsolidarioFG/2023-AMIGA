@@ -32,6 +32,15 @@ function ResponsiveAppBar() {
         setAnchorElUser(event.currentTarget);
     };
 
+    const handleParticipant = () => {
+        navigate('/');
+        setAnchorElNav(null);
+    }
+    const handleStatistics = () => {
+        navigate('/statistics');
+        setAnchorElNav(null);
+    }
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
@@ -89,10 +98,10 @@ function ResponsiveAppBar() {
                                 display: {xs: 'block', md: 'none'},
                             }}
                         >
-                            <MenuItem variant="contained" onClick={handleCloseNavMenu}>
+                            <MenuItem variant="contained" onClick={handleParticipant}>
                                 <Typography textAlign="center">Participantes</Typography>
                             </MenuItem>
-                            <MenuItem variant="contained" onClick={handleCloseNavMenu}>
+                            <MenuItem variant="contained" onClick={handleStatistics}>
                                 <Typography textAlign="center">Estadísticas</Typography>
                             </MenuItem>
                             <MenuItem variant="contained" onClick={handleCloseNavMenu}>
@@ -111,8 +120,8 @@ function ResponsiveAppBar() {
                             indicatorColor="primary"
                             aria-label="Navigation tabs"
                         >
-                            <Tab label="Participantes" onClick={handleCloseNavMenu} />
-                            <Tab label="Estadísticas" onClick={handleCloseNavMenu} />
+                            <Tab label="Participantes" onClick={handleParticipant} />
+                            <Tab label="Estadísticas" onClick={handleStatistics} />
                             <Tab label="Voluntariado" onClick={handleCloseNavMenu} />
                             <Tab label="Técnicos" onClick={handleCloseNavMenu} />
                         </Tabs>

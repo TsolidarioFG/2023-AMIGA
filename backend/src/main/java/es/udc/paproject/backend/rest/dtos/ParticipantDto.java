@@ -79,6 +79,15 @@ public class ParticipantDto {
     @NotNull
     private List<Participant_ProgramDto> programs;
     private String derivation;
+    private String observation;
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
+    }
 
     public Long getIdParticipant() {
         return idParticipant;
