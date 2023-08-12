@@ -1,7 +1,7 @@
 import {appFetch, config} from "./appFetch";
 
-export const getObservation = (id, page, onSuccess) =>
-    appFetch(`/observation/get?idParticipant=${id}&page=${page}`, config('GET'), onSuccess);
+export const getObservation = (criteria, onSuccess) =>
+    appFetch(`/observation/get`, config('POST', criteria), onSuccess);
 
 export const createObservation = ( data, onSuccess, onErrors) => {
 

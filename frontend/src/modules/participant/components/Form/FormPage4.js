@@ -29,7 +29,7 @@ const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
     };
 
     const handleObservationsChange = (event) => {
-        setFormData({...formData, observations: event.target.value});
+        setFormData({...formData, observation: event.target.value});
     };
 
     const handleSubmit = (event) => {
@@ -81,7 +81,7 @@ const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
                         label="Observaciones"
                         multiline
                         rows={4}
-                        value={formData.observations || ""}
+                        value={formData.observation || ""}
                         onChange={handleObservationsChange}
                     />
                 </div>

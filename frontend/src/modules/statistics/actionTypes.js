@@ -1,0 +1,1 @@
+export const FIND_STATISTICS_COMPLETED = "project/statistics/findStatisticsCompleted";

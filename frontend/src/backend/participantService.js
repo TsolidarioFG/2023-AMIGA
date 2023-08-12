@@ -32,12 +32,3 @@ export const saveAnnualData = ( data, onSuccess, onErrors) => {
 
     appFetch(`/participant/saveAnnualData`, config('POST', data), onSuccess, onErrors);
 }
-
-export const getExcel = (starDate, endDate, onSuccess) => {
-    let path = 'participant/downloadExcel?startDate=';
-    path += starDate;
-    path += "&endDate=";
-    path += endDate;
-
-    appFetch(path, config('GET'), onSuccess);
-}

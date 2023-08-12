@@ -1,13 +1,34 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import Button from '@mui/material/Button';
 import './Form.css';
 import RegisterMinor from "./RegisterMinor";
 import FormPage2Part2 from "./FormPage2Part2";
-import {HomeLink} from "../../../common";
+import {Errors, HomeLink} from "../../../common";
 
 
 const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
+
+    const [backendErrors, setBackendErrors] = useState(null);
+
+    const handleSubmitNext = () => {
+
+        if(formData.situation === ''){
+            setBackendErrors({globalError: 'Rellena situación administrativa'});
+        }else{
+            nextPage();
+        }
+    }
+
+    const handleSubmitPrevious = () => {
+
+        if(formData.situation === ''){
+            setBackendErrors({globalError: 'Rellena situación administrativa'});
+        }else{
+            previousPage();
+        }
+
+    }
 
     return (
         <div className="container">
@@ -18,11 +39,12 @@ const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
             <RegisterMinor formData={formData} setFormData={setFormData}></RegisterMinor>
             <br/>
             <FormPage2Part2 formData={formData} setFormData={setFormData}></FormPage2Part2>
-
+            <br/>
+            <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
             <div className="center">
-                <Button variant="contained" onClick={previousPage}>Anterior</Button>
+                <Button variant="contained" onClick={handleSubmitPrevious}>Anterior</Button>
                 <div className="bigSpace"></div>
-                <Button variant="contained" onClick={nextPage}>Siguiente</Button>
+                <Button variant="contained" onClick={handleSubmitNext}>Siguiente</Button>
             </div>
 
         </div>

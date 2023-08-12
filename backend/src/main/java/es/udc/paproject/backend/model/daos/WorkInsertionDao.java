@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface WorkInsertionDao extends PagingAndSortingRepository<WorkInsertion, Long> {
 
@@ -22,4 +23,7 @@ public interface WorkInsertionDao extends PagingAndSortingRepository<WorkInserti
             @Param("participant") Participant participant,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT w FROM WorkInsertion w WHERE w.participant IN :participants")
+    List<WorkInsertion> findByParticipants(@Param("participants") List<Participant> participants);
 }

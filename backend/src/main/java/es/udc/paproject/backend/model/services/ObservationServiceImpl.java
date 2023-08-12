@@ -12,6 +12,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,18 +32,25 @@ public class ObservationServiceImpl implements ObservationService{
     }
 
     @Override
-    public Block<Observation> getObservations(Long idParticipant, int page, int size, LocalDate startDate, LocalDate endDate, List<String> observationTypes) {
+    public Block<Observation> getObservations(Long idParticipant, int page, int size, LocalDate startDate,
+                                              LocalDate endDate, List<String> observationTypes) {
         Participant participant = participantDao.findById(idParticipant).orElse(null);
-        Slice<Observation> obervations = observationDao.findByParticipantOrderByDateDesc(participant, PageRequest.of(page, size));
 
-        /*
-        if(observationTypes.isEmpty() || observationTypes.size() == ObservationType.values().length) {
-            //obervations = observationDao.findByParticipantOrderByDateDesc(participant, PageRequest.of(page, size));
-        }else if( observationTypes.size() == 1){
+        Slice<Observation> observations;
 
+        if(observationTypes == null || observationTypes.isEmpty() || observationTypes.size() == ObservationType.values().length) {
+            observations = observationDao.findByDate(startDate, endDate, participant, PageRequest.of(page, size));
+        } else {
+            List<ObservationType> observationTypeList = new ArrayList<>();
+            for( String type: observationTypes) {
+                observationTypeList.add(ObservationType.valueOf(type));
+            }
+
+            observations = observationDao.findByTypeAndDate(observationTypeList,
+                    startDate, endDate, participant, PageRequest.of(page, size));
         }
-*/
-        return new Block<>(obervations.getContent(), obervations.hasNext());
+
+        return new Block<>(observations.getContent(), observations.hasNext());
     }
 
     @Override

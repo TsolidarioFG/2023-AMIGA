@@ -61,7 +61,7 @@ const WorkInsertion = () => {
 
     const handleConfirmCreate = (newData) => {
         backend.work.createWorkInsertion({...newData, participant: participant.idParticipant},
-            setData([...data, newData]),
+            setData([ newData, ...data]),
             errors => setBackendErrors(errors)
         )
         setCreateModalOpen(false);
@@ -71,7 +71,7 @@ const WorkInsertion = () => {
         backend.work.updateWorkInsertion(updatedData,
             () => {
                 const newData = data.filter((_, i) => i !== index);
-                setData([...newData, updatedData])
+                setData([updatedData, ...newData])
                 setIndex(null);
             }
         )
@@ -117,7 +117,7 @@ const WorkInsertion = () => {
                             <TableCell>Tipo contrato</TableCell>
                             <TableCell>Sector</TableCell>
                             <TableCell>Jornada</TableCell>
-                            <TableCell>Action</TableCell>
+                            <TableCell>Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -129,10 +129,10 @@ const WorkInsertion = () => {
                                 <TableCell>{row.workingDay === "FULL_TIME" ? "Completa" : "Parcial"}</TableCell>
                                 <TableCell>
                                     <Button variant="outlined" onClick={() => handleUpdate(index)}>
-                                        Edit
+                                        Editar
                                     </Button>
                                     <Button variant="outlined" onClick={() => handleDelete(index)}>
-                                        Delete
+                                        Eliminar
                                     </Button>
                                 </TableCell>
                             </TableRow>

@@ -72,6 +72,7 @@ const FormContainer = () => {
         demand: null,
         programs: [],
         derivation: '',
+        observation: ''
     });
 
     function backendCall(onSucess, onErrors) {

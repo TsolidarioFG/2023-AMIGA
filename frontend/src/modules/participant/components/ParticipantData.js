@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {PDFViewer} from "@react-pdf/renderer";
 import './Form/Confirm.css';
 import {useDispatch, useSelector} from "react-redux";
-import ParticipantPdf from "./ParticipantPdf";
 import Typography from "@mui/material/Typography";
 import * as selectors from "../../app/selectors";
 import * as userSelector from "../selectors"
@@ -14,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import {BackLink} from "../../common";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
+import ParticipantPdfData from "./ParticipantPdfData";
 
 const ParticipantData = () => {
     const dispatch = useDispatch();
@@ -200,7 +200,7 @@ const ParticipantData = () => {
             <br/>
 
             <PDFViewer style={{width: "100%", height: "90vh"}}>
-                <ParticipantPdf formData={user} selectors={data}/>
+                <ParticipantPdfData formData={user} selectors={data}/>
             </PDFViewer>
         </div>
 

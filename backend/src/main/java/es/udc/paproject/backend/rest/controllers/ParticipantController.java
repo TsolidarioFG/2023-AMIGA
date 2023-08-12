@@ -1,12 +1,10 @@
 package es.udc.paproject.backend.rest.controllers;
 
-import es.udc.paproject.backend.rest.dtos.StatisticsDto;
+import es.udc.paproject.backend.rest.dtos.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import es.udc.paproject.backend.model.exceptions.InstanceNotFoundException;
 import es.udc.paproject.backend.model.services.ParticipantService;
-import es.udc.paproject.backend.rest.dtos.ParticipantDto;
-import es.udc.paproject.backend.rest.dtos.ParticipantSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -19,11 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,166 +69,62 @@ public class ParticipantController {
             return ResponseEntity.ok(participantDto1);
     }
 
+    @GetMapping("/statistics")
+    public ResponseEntity<StatisticsDto> getStatistics(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok( participantService.getStatistics(startDate, endDate));
+    }
+
     @GetMapping("/downloadExcel")
     public ResponseEntity<Resource> downloadExcel(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                   @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<StatisticsDto> statisticsDtos = participantService.getExcelData(startDate, endDate);
+        ExcelDto excelDto = participantService.getExcelData(startDate, endDate);
 
-        String[] headers = {"fecha", "programa", "situacion", "retornado", "pi", "dni/nie/pas", "nombre", "apellidos", "edad",
-                "fecha nacimiento", "genero", "pais origen", "municipio", "provincia", "telefono", "correo",
-                "nivel de estudios", "situacion laboral", "numero inserciones"};
+        String[] headers = {"Fecha", "Programa", "Situacion", "Retornado", "Pi", "dni/nie/pas", "Nombre", "Apellidos", "Edad",
+                "Fecha nacimiento", "Genero", "Pais origen", "Municipio", "Provincia", "Telefono", "Correo",
+                "Nivel de estudios", "Situacion laboral", "Numero inserciones"};
 
         try (Workbook workbook = WorkbookFactory.create(true)) {
-            Sheet sheet = workbook.createSheet("Datos");
+            Sheet sheet = workbook.createSheet("Participantes");
             Font headerFont = workbook.createFont();
             headerFont.setBold(true);
             CellStyle headerCellStyle = workbook.createCellStyle();
             headerCellStyle.setFont(headerFont);
 
-            // Create header row
-            Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerCellStyle);
-            }
+            generateTable(sheet, headers, headerCellStyle, excelDto.getParticipantExcelDtoList());
 
-            // Create data rows
-            int rowIndex = 1;
-            for (StatisticsDto statisticsDto : statisticsDtos) {
-                Row row = sheet.createRow(rowIndex++);
-
-                int cellIndex = 0;
-
-                Cell cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getPrograms());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getSituation());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getReturned());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getPi());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getDocument());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getName());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getSurnames());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getYear());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getBirthdate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getSex());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getCountry());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getMunicipality());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getProvince());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getPhone());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getEmail());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getStudies());
-                cell = row.createCell(cellIndex++);
-                cell.setCellValue(statisticsDto.getWorkSituation());
-                cell = row.createCell(cellIndex);
-                cell.setCellValue(statisticsDto.getNumberInsertion());
-            }
+            Sheet statisticsSheet = workbook.createSheet("Estadisticas");
+            int rowIndex = 0;
 
             // parte nacionalidades
+            rowIndex = generateStatisticsHeader(rowIndex, "Nacionalidades", "Hombres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getNationalitiesCountMen(), statisticsSheet);
 
-            rowIndex += 3;
-
-            Row row = sheet.createRow(rowIndex++);
-            Cell cell = row.createCell(0);
-            cell.setCellValue("Hombres");
-            cell.setCellStyle(headerCellStyle);
-            cell = row.createCell(4);
-            cell.setCellValue("Mujeres");
-            cell.setCellStyle(headerCellStyle);
-            row = sheet.createRow(rowIndex++);
-            cell = row.createCell(0);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Nacionalidad");
-            cell = row.createCell(1);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Número");
-            cell = row.createCell(4);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Nacionalidad");
-            cell = row.createCell(5);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Número");
-
-            int memoryIndex = rowIndex;
-            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getNationalitiesCountMen().entrySet()) {
-                row = sheet.createRow(rowIndex++);
-                cell = row.createCell(0);
-                cell.setCellValue(entry.getKey());
-                cell = row.createCell(1);
-                cell.setCellValue(entry.getValue());
-            }
-
-            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getNationalitiesCountWoman().entrySet()) {
-                row = sheet.createRow(memoryIndex++);
-                cell = row.createCell(4);
-                cell.setCellValue(entry.getKey());
-                cell = row.createCell(5);
-                cell.setCellValue(entry.getValue());
-            }
+            rowIndex = generateStatisticsHeader(rowIndex, "Nacionalidades", "Mujeres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getNationalitiesCountWoman(), statisticsSheet);
 
             // parte factores exclusion
+            rowIndex = generateStatisticsHeader(rowIndex, "Factores exclusion", "Hombres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getExclusionFactorCountMen(), statisticsSheet);
 
-            rowIndex += 3;
+            rowIndex = generateStatisticsHeader(rowIndex, "Factores exclusion", "Mujeres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getExclusionFactorCountWoman(), statisticsSheet);
 
-            row = sheet.createRow(rowIndex++);
-            cell = row.createCell(0);
-            cell.setCellValue("Hombres");
-            cell.setCellStyle(headerCellStyle);
-            cell = row.createCell(4);
-            cell.setCellValue("Mujeres");
-            cell.setCellStyle(headerCellStyle);
-            row = sheet.createRow(rowIndex++);
-            cell = row.createCell(0);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Factor exclusión");
-            cell = row.createCell(1);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Número");
-            cell = row.createCell(4);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Factor exclusión");
-            cell = row.createCell(5);
-            cell.setCellStyle(headerCellStyle);
-            cell.setCellValue("Número");
+            // parte contratos
+            rowIndex = generateStatisticsHeader(rowIndex, "Tipo contrato", "Hombres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getContractCountMen(), statisticsSheet);
 
-            memoryIndex = rowIndex;
-            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getExclusionFactorCountMen().entrySet()) {
-                row = sheet.createRow(rowIndex++);
-                cell = row.createCell(0);
-                cell.setCellValue(entry.getKey());
-                cell = row.createCell(1);
-                cell.setCellValue(entry.getValue());
-            }
+            rowIndex = generateStatisticsHeader(rowIndex, "Tipo contrato", "Mujeres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getContractCountWoman(), statisticsSheet);
 
-            for( Map.Entry<String, Integer> entry : statisticsDtos.get(0).getExclusionFactorCountWoman().entrySet()) {
-                row = sheet.createRow(memoryIndex++);
-                cell = row.createCell(4);
-                cell.setCellValue(entry.getKey());
-                cell = row.createCell(5);
-                cell.setCellValue(entry.getValue());
-            }
+            rowIndex = generateStatisticsHeader(rowIndex, "Tipo jornada", "Hombres", statisticsSheet, headerCellStyle);
+            rowIndex = printData(rowIndex, excelDto.getWorkTimeCountMen(), statisticsSheet);
 
+            rowIndex = generateStatisticsHeader(rowIndex, "Tipo jornada", "Mujeres", statisticsSheet, headerCellStyle);
+            printData(rowIndex, excelDto.getWorkTimeCountWoman(), statisticsSheet);
 
-
-
-            for (int i = 0; i < headers.length; i++) {
-                sheet.autoSizeColumn(i);
+            for (int i = 0; i < 3; i++) {
+                statisticsSheet.autoSizeColumn(i);
             }
 
             // Write the Excel data to a byte array
@@ -253,5 +145,98 @@ public class ParticipantController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void generateTable(Sheet sheet, String[] headers, CellStyle headerCellStyle, List<ParticipantExcelDto> excelDtoList){
+        // Create header row
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        // Create data rows
+        int rowIndex = 1;
+        for (ParticipantExcelDto participantExcelDto : excelDtoList) {
+            Row row = sheet.createRow(rowIndex++);
+
+            int cellIndex = 0;
+
+            Cell cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getPrograms());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getSituation());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getReturned());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getPi());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getDocument());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getName());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getSurnames());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getYear());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getBirthdate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getSex());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getCountry());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getMunicipality());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getProvince());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getPhone());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getEmail());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getStudies());
+            cell = row.createCell(cellIndex++);
+            cell.setCellValue(participantExcelDto.getWorkSituation());
+            cell = row.createCell(cellIndex);
+            cell.setCellValue(participantExcelDto.getNumberInsertion());
+        }
+
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+    }
+
+    private int generateStatisticsHeader(int rowIndex, String dataName, String sex, Sheet sheet, CellStyle headerCellStyle){
+        Row row = sheet.createRow(rowIndex++);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(sex);
+        cell.setCellStyle(headerCellStyle);
+        row = sheet.createRow(rowIndex++);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerCellStyle);
+        cell.setCellValue(dataName);
+        cell = row.createCell(1);
+        cell.setCellStyle(headerCellStyle);
+        cell.setCellValue("Número");
+
+        return rowIndex;
+    }
+
+    private int printData(int rowIndex, Map<String, Integer> data, Sheet sheet){
+        Row row;
+        Cell cell;
+
+        for( Map.Entry<String, Integer> entry : data.entrySet()) {
+            row = sheet.createRow(rowIndex++);
+            cell = row.createCell(0);
+            cell.setCellValue(entry.getKey());
+            cell = row.createCell(1);
+            cell.setCellValue(entry.getValue());
+        }
+
+        return rowIndex + 2;
     }
 }

@@ -73,6 +73,7 @@ const NewAnnualData = () => {
         demand: null,
         programs: [],
         derivation: '',
+        observation: ''
     });
     function backendCall(onSucess, onErrors) {
         backend.participant.createParticipant(

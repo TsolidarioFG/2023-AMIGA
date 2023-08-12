@@ -65,6 +65,7 @@ const FormContainer = () => {
         demand: null,
         programs: [],
         derivation: '',
+        observation: ''
     });
 
     const nextPage = () => {

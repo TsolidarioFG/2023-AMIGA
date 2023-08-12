@@ -24,7 +24,7 @@ const findObservationsCompleted = observations => ({
 export const findObservations = criteria => dispatch => {
 
     dispatch(clearObservationSearch());
-    backend.observation.getObservation(criteria.id, criteria.page,
+    backend.observation.getObservation(criteria,
         result => dispatch(findObservationsCompleted({criteria, result})));
 
 }

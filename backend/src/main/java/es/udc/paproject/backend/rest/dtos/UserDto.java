@@ -59,7 +59,7 @@ public class UserDto {
 		this.password = password;
 	}
 
-	@NotNull(groups={AllValidations.class, UpdateValidations.class})
+
 	@Size(min=1, max=60, groups={AllValidations.class, UpdateValidations.class})
 	public String getFirstName() {
 		return firstName;
@@ -69,7 +69,7 @@ public class UserDto {
 		this.firstName = firstName.trim();
 	}
 
-	@NotNull(groups={AllValidations.class, UpdateValidations.class})
+
 	@Size(min=1, max=60, groups={AllValidations.class, UpdateValidations.class})
 	public String getLastName() {
 		return lastName;
@@ -79,7 +79,7 @@ public class UserDto {
 		this.lastName = lastName.trim();
 	}
 
-	@NotNull(groups={AllValidations.class, UpdateValidations.class})
+
 	@Size(min=1, max=60, groups={AllValidations.class, UpdateValidations.class})
 	@Email(groups={AllValidations.class, UpdateValidations.class})
 	public String getEmail() {

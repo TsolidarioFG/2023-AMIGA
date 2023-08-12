@@ -9,18 +9,26 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import {Tab, Tabs} from "@mui/material";
 import {useState} from "react";
+import users from "../../users";
+import {useDispatch, useSelector} from "react-redux";
+import * as selectors from "../../users/selectors";
 
 
 function ResponsiveAppBar() {
     const [value, setValue] = useState(0);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const navigate = useNavigate();
 
+    const location = useLocation();
+    const relativePath = location.pathname;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const user = useSelector(selectors.getUser);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -33,7 +41,7 @@ function ResponsiveAppBar() {
     };
 
     const handleParticipant = () => {
-        navigate('/');
+        navigate('/participant');
         setAnchorElNav(null);
     }
     const handleStatistics = () => {
@@ -48,6 +56,20 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogout = () => {
+        dispatch(users.actions.logout());
+        navigate('/');
+        setAnchorElUser(null);
+    };
+
+    const handleChangePassword = () => {
+        navigate('/users/change-password');
+        setAnchorElUser(null);
+    };
+
+    if(relativePath === "/")
+        return null
 
     return (
         <AppBar position="static" color="inherit">
@@ -65,7 +87,7 @@ function ResponsiveAppBar() {
                             marginTop: 2,
                             marginBottom: 1
                         }}
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/participant')}
                     />
                     <div className="space"></div>
 
@@ -128,9 +150,9 @@ function ResponsiveAppBar() {
                     </Box>
 
                     <Box sx={{flexGrow: 0}}>
-                        <Tooltip title="Open settings">
+                        <Tooltip title="Abrir opciones">
                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                <Avatar alt={user.firstName} src="/static/images/avatar/2.jpg"/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -149,11 +171,11 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Profile</Typography>
+                            <MenuItem onClick={handleChangePassword}>
+                                <Typography textAlign="center">Cambiar contraseña</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Logout</Typography>
+                            <MenuItem onClick={handleLogout}>
+                                <Typography textAlign="center">Cerrar sesión</Typography>
                             </MenuItem>
                         </Menu>
                     </Box>

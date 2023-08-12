@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -166,15 +167,20 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public List<StatisticsDto> getExcelData(LocalDate startDate, LocalDate endDate) {
+    public ExcelDto getExcelData(LocalDate startDate, LocalDate endDate) {
 
         List<Participant> participantList = participantDao.findByYearRange(startDate.getYear(), endDate.getYear());
-        List<StatisticsDto> statisticsDtos = new ArrayList<>();
+        List<ParticipantExcelDto> excelDtoList = new ArrayList<>();
+        ExcelDto excelDto = new ExcelDto();
 
         Map<String, Integer> exclusionFactorCountMen = new HashMap<>();
         Map<String, Integer> exclusionFactorCountWoman = new HashMap<>();
         Map<String, Integer> nationalitiesCountMen = new HashMap<>();
         Map<String, Integer> nationalitiesCountWoman = new HashMap<>();
+        Map<String, Integer> contractsCountMen = new HashMap<>();
+        Map<String, Integer> contractsCountWoman = new HashMap<>();
+        Map<String, Integer> workTimeCountMen = new HashMap<>();
+        Map<String, Integer> workTimeCountWoman = new HashMap<>();
 
         for (Participant participant : participantList) {
             if (observationDao.existsObservationParticipant(participant, startDate, endDate)) {
@@ -188,40 +194,144 @@ public class ParticipantServiceImpl implements ParticipantService {
 
                 AnnualData annualData = annualDataDao.getAnnualData(participant.getId(), lastYearInRange);
 
-                StatisticsDto statisticsDto = new StatisticsDto(participant, annualData);
-                statisticsDto.setNumberInsertion(workInsertionDao.countWorkInsertions(participant, startDate, endDate));
-                statisticsDtos.add(statisticsDto);
+                ParticipantExcelDto participantExcelDto = new ParticipantExcelDto(participant, annualData);
+                participantExcelDto.setNumberInsertion(workInsertionDao.countWorkInsertions(participant, startDate, endDate));
+                excelDtoList.add(participantExcelDto);
 
-                Set<ExclusionFactor> exclusionFactors = annualData.getExclusionFactors();
-
-                for (ExclusionFactor exclusionFactor : exclusionFactors) {
-                    String factorName = exclusionFactor.getName();
-                    if (participant.getGender() == Gender.H) {
-                        exclusionFactorCountMen.put(factorName, exclusionFactorCountMen.getOrDefault(factorName, 0) + 1);
-                    } else if (participant.getGender() == Gender.M) {
-                        exclusionFactorCountWoman.put(factorName, exclusionFactorCountWoman.getOrDefault(factorName, 0) + 1);
-                    }
-                }
-
-                Set<Country> nationalities = annualData.getNationalities();
-
-                for (Country nationality : nationalities) {
-                    String nationalityName = nationality.getName();
-                    if (participant.getGender() == Gender.H) {
-                        nationalitiesCountMen.put(nationalityName, nationalitiesCountMen.getOrDefault(nationalityName, 0) + 1);
-                    } else if (participant.getGender() == Gender.M) {
-                        nationalitiesCountWoman.put(nationalityName, nationalitiesCountWoman.getOrDefault(nationalityName, 0) + 1);
-                    }
-                }
+                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen, nationalitiesCountWoman, participant, annualData);
             }
         }
-        if (!statisticsDtos.isEmpty()) {
-            statisticsDtos.get(0).setExclusionFactorCountMen(exclusionFactorCountMen);
-            statisticsDtos.get(0).setExclusionFactorCountWoman(exclusionFactorCountWoman);
-            statisticsDtos.get(0).setNationalitiesCountMen(nationalitiesCountMen);
-            statisticsDtos.get(0).setNationalitiesCountWoman(nationalitiesCountWoman);
+
+        List<WorkInsertion> workInsertions = workInsertionDao.findByParticipants(participantList);
+
+        for (WorkInsertion workInsertion : workInsertions) {
+            getStatistics(contractsCountMen, contractsCountWoman, workInsertion.getParticipant(), workInsertion.getContract().getName());
+            getStatistics(workTimeCountMen, workTimeCountWoman, workInsertion.getParticipant(), workInsertion.getWorkingDay().toString());
         }
-        return statisticsDtos;
+
+        if (!excelDtoList.isEmpty()) {
+            excelDto.setExclusionFactorCountMen(exclusionFactorCountMen);
+            excelDto.setExclusionFactorCountWoman(exclusionFactorCountWoman);
+            excelDto.setNationalitiesCountMen(nationalitiesCountMen);
+            excelDto.setNationalitiesCountWoman(nationalitiesCountWoman);
+            excelDto.setContractCountMen(contractsCountMen);
+            excelDto.setContractCountWoman(contractsCountWoman);
+            excelDto.setWorkTimeCountMen(workTimeCountMen);
+            excelDto.setWorkTimeCountWoman(workTimeCountWoman);
+            excelDto.setParticipantExcelDtoList(excelDtoList);
+        }
+        return excelDto;
+    }
+
+    @Override
+    public StatisticsDto getStatistics(LocalDate startDate, LocalDate endDate) {
+        List<Participant> participantList = participantDao.findByYearRange(startDate.getYear(), endDate.getYear());
+        StatisticsDto statisticsDto = new StatisticsDto();
+
+        Map<String, Integer> exclusionFactorCountMen = new HashMap<>();
+        Map<String, Integer> exclusionFactorCountWoman = new HashMap<>();
+        Map<String, Integer> nationalitiesCountMen = new HashMap<>();
+        Map<String, Integer> nationalitiesCountWoman = new HashMap<>();
+        Map<String, Integer> contractsCountMen = new HashMap<>();
+        Map<String, Integer> contractsCountWoman = new HashMap<>();
+        Map<String, Integer> workTimeCountMen = new HashMap<>();
+        Map<String, Integer> workTimeCountWoman = new HashMap<>();
+
+        Integer firstYearRangeMen = 0, secondYearRangeMen = 0, thirdYearRangeMen = 0, fourthYearRangeMen = 0;
+        Integer firstYearRangeWoman = 0, secondYearRangeWoman = 0, thirdYearRangeWoman = 0, fourthYearRangeWoman = 0;
+        LocalDate currentDate = LocalDate.now();
+        for (Participant participant : participantList) {
+            if (observationDao.existsObservationParticipant(participant, startDate, endDate)) {
+
+                int lastYearInRange = 0;
+                for (int year : participant.getYearList()) {
+                    if (year <= endDate.getYear() && year > lastYearInRange) {
+                        lastYearInRange = year;
+                    }
+                }
+                Period period = Period.between(currentDate, participant.getBirthDate());
+                int year = period.getYears();
+
+                if (participant.getGender() == Gender.H) {
+                    statisticsDto.incrementNumberMen();
+
+                    if (year <= 29) {
+                        firstYearRangeMen++;
+                    } else if (year <= 44) {
+                        secondYearRangeMen++;
+                    } else if (year <= 59) {
+                        thirdYearRangeMen++;
+                    } else {
+                        fourthYearRangeMen++;
+                    }
+
+                } else if (participant.getGender() == Gender.M) {
+                    statisticsDto.incrementNumberWoman();
+
+                    if (year <= 29) {
+                        firstYearRangeWoman++;
+                    } else if (year <= 44) {
+                        secondYearRangeWoman++;
+                    } else if (year <= 59) {
+                        thirdYearRangeWoman++;
+                    } else {
+                        fourthYearRangeWoman++;
+                    }
+                }
+
+                AnnualData annualData = annualDataDao.getAnnualData(participant.getId(), lastYearInRange);
+
+                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen, nationalitiesCountWoman, participant, annualData);
+            }
+        }
+
+        List<WorkInsertion> workInsertions = workInsertionDao.findByParticipants(participantList);
+
+        for (WorkInsertion workInsertion : workInsertions) {
+            getStatistics(contractsCountMen, contractsCountWoman, workInsertion.getParticipant(), workInsertion.getContract().getName());
+            getStatistics(workTimeCountMen, workTimeCountWoman, workInsertion.getParticipant(), workInsertion.getWorkingDay().toString());
+        }
+
+        if (!participantList.isEmpty()) {
+            statisticsDto.setExclusionFactorCountMen(exclusionFactorCountMen);
+            statisticsDto.setExclusionFactorCountWoman(exclusionFactorCountWoman);
+            statisticsDto.setNationalitiesCountMen(nationalitiesCountMen);
+            statisticsDto.setNationalitiesCountWoman(nationalitiesCountWoman);
+            statisticsDto.setContractCountMen(contractsCountMen);
+            statisticsDto.setContractCountWoman(contractsCountWoman);
+            statisticsDto.setWorkTimeCountMen(workTimeCountMen);
+            statisticsDto.setWorkTimeCountWoman(workTimeCountWoman);
+            statisticsDto.setYearsMen(Arrays.asList(firstYearRangeMen, secondYearRangeMen, thirdYearRangeMen, fourthYearRangeMen));
+            statisticsDto.setYearsWoman(Arrays.asList(firstYearRangeWoman, secondYearRangeWoman, thirdYearRangeWoman, fourthYearRangeWoman));
+        }
+        return statisticsDto;
+    }
+
+    private void generateStadistics(Map<String, Integer> exclusionFactorCountMen,
+                                    Map<String, Integer> exclusionFactorCountWoman,
+                                    Map<String, Integer> nationalitiesCountMen,
+                                    Map<String, Integer> nationalitiesCountWoman,
+                                    Participant participant, AnnualData annualData) {
+
+        Set<ExclusionFactor> exclusionFactors = annualData.getExclusionFactors();
+
+        for (ExclusionFactor exclusionFactor : exclusionFactors) {
+            getStatistics(exclusionFactorCountMen, exclusionFactorCountWoman, participant, exclusionFactor.getName());
+        }
+
+        Set<Country> nationalities = annualData.getNationalities();
+
+        for (Country nationality : nationalities) {
+            getStatistics(nationalitiesCountMen, nationalitiesCountWoman, participant, nationality.getName());
+        }
+    }
+
+    private void getStatistics(Map<String, Integer> mapCountMen, Map<String, Integer> mapCountWoman, Participant participant, String name) {
+        if (participant.getGender() == Gender.H) {
+            mapCountMen.put(name, mapCountMen.getOrDefault(name, 0) + 1);
+        } else if (participant.getGender() == Gender.M) {
+            mapCountWoman.put(name, mapCountWoman.getOrDefault(name, 0) + 1);
+        }
     }
 
     private boolean isPresent(List<Participant_ProgramDto> list, Long id) {

@@ -35,7 +35,7 @@ function Participant() {
         dispatch(actions.findParticipant(
             selectedParticipant.id,
             Math.max(...selectedParticipant.yearList),));
-        dispatch(actions.findObservations({id: selectedParticipant.id, page: 0}));
+        dispatch(actions.findObservations({idParticipant: selectedParticipant.id, page: 0}));
         navigate('/participant/details')
     }
     const handleChange = (e) => {
