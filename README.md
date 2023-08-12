@@ -52,6 +52,7 @@ cmd /c "podman exec -i amiga-test mysql --password=amiga < dump-amiga.sql"
 
 ```
 cd backend
+mvn clean install (first time)
 mvn spring-boot:run
 
 cd frontend
