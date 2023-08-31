@@ -109,7 +109,7 @@ const FormPage1Part2 = ({formData, setFormData}) => {
 
             setFormData({...formData, province: selectedProvince ? selectedProvince.id : null});
         }
-        // eslint-disable-next-line
+    // eslint-disable-next-line
     }, [selectedProvince, setFormData, data]);
 
     useEffect(() => {
@@ -131,6 +131,7 @@ const FormPage1Part2 = ({formData, setFormData}) => {
             setSelectedCohabitation(data.cohabitations.find((m) => m.id === formData.cohabitation) || null);
             setIsRegistered(formData.registered || false);
         }
+    // eslint-disable-next-line
     }, [data])
 
     if (!data)

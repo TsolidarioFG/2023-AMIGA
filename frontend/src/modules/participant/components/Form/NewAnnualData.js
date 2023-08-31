@@ -98,7 +98,7 @@ const NewAnnualData = () => {
                 }
             }
             setFormData({...formData, date: format(new Date(), 'yyyy-MM-dd')})
-
+        // eslint-disable-next-line
         }, [participant]
     )
     const renderPage = () => {

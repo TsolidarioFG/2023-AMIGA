@@ -28,7 +28,7 @@ const Body = () => {
             <br/>
             <AppGlobalComponents/>
             <Routes>
-                <Route path="/" element={<Login/>}/>
+                <Route path="/login" element={<Login/>}/>
                 {loggedIn && <Route path="/participant" element={<Participant/>}/>}
                 {loggedIn && <Route path="/participant/form" element={<FormParticipant/>}/>}
                 {loggedIn && <Route path="/participant/details" element={<ParticipantDetails/>}></Route>}

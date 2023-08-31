@@ -66,7 +66,7 @@ function ResponsiveAppBar() {
 
     const handleLogout = () => {
         dispatch(users.actions.logout());
-        navigate('/');
+        navigate('/login');
         setAnchorElUser(null);
     };
 
@@ -90,7 +90,7 @@ function ResponsiveAppBar() {
                 <Toolbar disableGutters>
                     <Avatar
                         alt="AMIGA Logo"
-                        src={process.env.PUBLIC_URL + '/logopng.png'}
+                        src={process.env.PUBLIC_URL + '/logo.png'}
                         sx={{
                             display: 'flex',
                             mr: 1,

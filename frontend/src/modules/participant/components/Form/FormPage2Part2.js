@@ -75,6 +75,7 @@ const FormPage2Part2 = ({formData, setFormData}) => {
             setHasSocialWorker(formData.socialWorker !== '');
             setIsInternationalProtection(formData.datePi !== '');
             setSituation(formData.situation || '');
+    // eslint-disable-next-line
     }, []);
 
     const handleChange = (e) => {

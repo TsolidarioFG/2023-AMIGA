@@ -124,7 +124,7 @@ const DocuPDF = ({formData, selectors}) => {
                         <Text style={styles.text}>{formData.date.split("-").reverse().join("-")}</Text>
                     </View>
                     <Text style={styles.title}>Ficha de acogida</Text>
-                    <Image style={styles.image} src={process.env.PUBLIC_URL + '/logopng.png'} />
+                    <Image style={styles.image} src={process.env.PUBLIC_URL + '/logo.png'} />
 
                 </View>
                 <View style={styles.body}>

@@ -2,6 +2,7 @@
   "name": "amiga-project",
   "version": "1.0.0",
   "description": "AMIGA Project",
+  "homepage": "/login",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

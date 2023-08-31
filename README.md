@@ -1,13 +1,55 @@
 # AMIGA Project 
 
-## Requirements
+# Para Despliegue 
+
+## Requirimientos
 
 - Node 16.
 - Java 17 (tested with Eclipse Temurin).
 - Maven 3.8+.
 - MySQL 8.
 
-## Database creation
+### Para backend
+
+### Creación base de datos
+
+Instalar mysql y ejecutar el script Database.sql que está en la carpeta sql del backend.
+
+### Configuración del back
+
+Modificar las variables relativas a la base de datos en el pom.xml con los datos de la bbdd creada.
+Son tres campos los que hay que modificar: 
+- dataSourcePro.user: usuario de la base de datos.
+- dataSourcePro.password: contraseña del usuario.
+- dataSourcePro.url: url de acceso a la base de datos.
+
+Terminado este proceso ejecutar:
+
+```
+mvn clean package -DskipTests
+```
+
+Esto creará el jar que contiene la aplicación en 2023-AMIGA\backend\target\amiga-backend-1.0.0.jar. 
+Para lanzar la aplicación ejecutar desde esa carpeta:
+
+```
+java -jar amiga-backend-1.0.0.jar --spring.profiles.active=pro
+```
+
+### Para frontend
+
+Actualizar el archivo .env.production con la url del backend anteriormente desplegado. Posteriormente,
+dentro de la carpeta del front ejecutar:
+
+```
+npm install
+npm run build
+```
+Esto creará la carpeta build, la cual contiene todos los archivos necesarios para ejecutar la aplicación optimizada en un servidor web. 
+
+# Para Desarrollo
+
+## Creación base de datos
 
 Se necesita crear dos contenedores con MySQL 8. Se recomienda una de las dos siguientes opciones:
 

@@ -4,23 +4,48 @@ logging:
       hibernate:
         SQL: debug
 spring:
-  datasource:
-    url: @dataSource.url@
-    username: @dataSource.user@
-    password: @dataSource.password@
-  devtools:
-    restart:
-      trigger-file: reload
-    livereload:
-      enabled: false
   jackson:
     default-property-inclusion: NON_NULL
+  profiles:
+    default: des
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 project:
   jwt:
     signKey: Bu:GW8bgPlEw
     expirationMinutes: 1440
+
+---
+spring:
+  datasource:
+    url: @dataSourceDes.url@
+    username: @dataSourceDes.user@
+    password: @dataSourceDes.password@
+  devtools:
+    restart:
+      trigger-file: reload
+    livereload:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  config:
+    activate:
+      on-profile: des
+
+---
+spring:
+  datasource:
+    url: @dataSourcePro.url@
+    username: @dataSourcePro.user@
+    password: @dataSourcePro.password@
+  devtools:
+    add-properties: false
+  config:
+    activate:
+      on-profile: pro
