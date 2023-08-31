@@ -1,0 +1,1 @@
+export {default as volunteerComponent} from './components/VolunteerComponent';

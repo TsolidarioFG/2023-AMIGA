@@ -49,7 +49,6 @@ public class UserDto {
 		this.userName = userName.trim();
 	}
 
-	@NotNull(groups={AllValidations.class})
 	@Size(min=1, max=60, groups={AllValidations.class})
 	public String getPassword() {
 		return password;

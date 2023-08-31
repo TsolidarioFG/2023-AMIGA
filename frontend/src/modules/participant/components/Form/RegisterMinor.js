@@ -6,6 +6,8 @@ import {TextField, Button, Table, TableHead, TableBody, TableRow,
 import FormControl from "@mui/material/FormControl";
 import {Errors} from "../../../common";
 import Typography from "@mui/material/Typography";
+import {Delete} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
 
 const RegisterMinor = ({ formData, setFormData }) => {
     const [backendErrors, setBackendErrors] = useState(null);
@@ -48,6 +50,11 @@ const RegisterMinor = ({ formData, setFormData }) => {
             ...prevState,
             [name]: value,
         }));
+    };
+
+    const handleRemoveChild = (index) => {
+        const updatedKids = formData.kids.filter((child, i) => i !== index);
+        setFormData({ ...formData, kids: updatedKids });
     };
 
     const handleAddChild = (e) => {
@@ -120,14 +127,19 @@ const RegisterMinor = ({ formData, setFormData }) => {
                     <TableRow>
                         <TableCell>Sexo</TableCell>
                         <TableCell>Fecha de nacimiento</TableCell>
+                        <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {formData.kids.map((child, index) => (
                         <TableRow key={index}>
                             <TableCell>{child.sex === "H" ? "Masculino" : "Femenino"}</TableCell>
-
                             <TableCell>{format(new Date(child.birthDate), "dd 'de' MMMM 'de' yyyy", { locale: esLocale })}</TableCell>
+                            <TableCell>
+                                <IconButton onClick={() => handleRemoveChild(index)}>
+                                    <Delete/>
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

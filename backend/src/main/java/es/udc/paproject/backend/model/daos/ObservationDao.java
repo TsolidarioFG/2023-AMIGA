@@ -15,13 +15,15 @@ import java.util.List;
 public interface ObservationDao extends PagingAndSortingRepository<Observation, Long> {
 
     @Query("SELECT o FROM Observation o WHERE o.date >= COALESCE(:startDate, o.date) " +
-            "AND o.date <= COALESCE(:endDate, o.date) AND o.participant = :participant")
+            "AND o.date <= COALESCE(:endDate, o.date) AND o.participant = :participant " +
+            "ORDER BY o.date DESC")
     Slice<Observation> findByDate(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate,
                                   @Param("participant") Participant participant, Pageable pageable);
 
     @Query("SELECT o FROM Observation o WHERE o.observationType IN :types " +
-            "AND o.date >= COALESCE(:startDate, o.date) AND o.date <= COALESCE(:endDate, o.date) AND o.participant = :participant")
+            "AND o.date >= COALESCE(:startDate, o.date) AND o.date <= COALESCE(:endDate, o.date) " +
+            "AND o.participant = :participant ORDER BY o.date DESC")
     Slice<Observation> findByTypeAndDate(@Param("types") List<ObservationType> types,
                                          @Param("startDate") LocalDate startDate,
                                          @Param("endDate") LocalDate endDate,

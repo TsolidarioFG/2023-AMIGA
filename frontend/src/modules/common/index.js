@@ -3,4 +3,3 @@ export {default as Errors} from "./components/Errors";
 export {default as Loader} from "./components/Loader";
 export {default as Pager} from "./components/Pager";
 export {default as BackLink} from "./components/BackLink";
-export {default as HomeLink} from "./components/HomeLink";

@@ -4,7 +4,7 @@ import backend from "../../../backend";
 import {useDispatch, useSelector} from "react-redux";
 import * as selectors from "../selectors";
 import * as actions from "../actions"
-import {Errors, HomeLink} from "../../common";
+import {BackLink, Errors} from "../../common";
 import {useNavigate} from "react-router-dom";
 import { format } from 'date-fns';
 import FormControl from "@mui/material/FormControl";
@@ -53,7 +53,7 @@ const ObservationForm = () => {
 
         backend.observation.createObservation(observation,
             () => {
-                dispatch(actions.findObservations({id: participant.idParticipant, page: 0}));
+                dispatch(actions.findObservations({idParticipant: participant.idParticipant, page: 0}));
                 navigate('/participant/details');
             },
             errors => setBackendErrors(errors));
@@ -71,7 +71,7 @@ const ObservationForm = () => {
         <form onSubmit={handleSubmit}>
             <div className="header">
                 <h3> {'Nueva atención ' + participant.name + ' ' + participant.surnames}</h3>
-                <HomeLink></HomeLink>
+                <BackLink></BackLink>
             </div>
             <div className="row-container">
                 <TextField

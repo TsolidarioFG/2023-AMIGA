@@ -30,11 +30,6 @@ public class ParticipantController {
     @Autowired
     private ParticipantService participantService;
 
-    @GetMapping("/get")
-    ResponseEntity<List<ParticipantSummaryDto>> getListParticipants() {
-        return ResponseEntity.ok(participantService.getParcipants());
-    }
-
     @GetMapping("/getByDoc")
     ResponseEntity<ParticipantSummaryDto> getParticipantByIdentification(@RequestParam("type") String type,
                                                                          @RequestParam("doc") String doc) throws InstanceNotFoundException {
@@ -80,9 +75,9 @@ public class ParticipantController {
                                                   @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         ExcelDto excelDto = participantService.getExcelData(startDate, endDate);
 
-        String[] headers = {"Fecha", "Programa", "Situacion", "Retornado", "Pi", "dni/nie/pas", "Nombre", "Apellidos", "Edad",
+        String[] headers = {"Fecha", "Demanda", "Situacion", "Retornado", "Pi", "dni/nie/pas", "Nombre", "Apellidos", "Edad",
                 "Fecha nacimiento", "Genero", "Pais origen", "Municipio", "Provincia", "Telefono", "Correo",
-                "Nivel de estudios", "Situacion laboral", "Numero inserciones"};
+                "Nivel de estudios", "Situacion laboral", "Numero inserciones", "Programas"};
 
         try (Workbook workbook = WorkbookFactory.create(true)) {
             Sheet sheet = workbook.createSheet("Participantes");
@@ -166,7 +161,7 @@ public class ParticipantController {
             Cell cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             cell = row.createCell(cellIndex++);
-            cell.setCellValue(participantExcelDto.getPrograms());
+            cell.setCellValue(participantExcelDto.getDemand());
             cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getSituation());
             cell = row.createCell(cellIndex++);
@@ -199,8 +194,10 @@ public class ParticipantController {
             cell.setCellValue(participantExcelDto.getStudies());
             cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getWorkSituation());
-            cell = row.createCell(cellIndex);
+            cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getNumberInsertion());
+            cell = row.createCell(cellIndex);
+            cell.setCellValue(participantExcelDto.getPrograms());
         }
 
         for (int i = 0; i < headers.length; i++) {

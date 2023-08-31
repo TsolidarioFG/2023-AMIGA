@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import './Form.css';
 import RegisterMinor from "./RegisterMinor";
 import FormPage2Part2 from "./FormPage2Part2";
-import {Errors, HomeLink} from "../../../common";
+import {BackLink, Errors} from "../../../common";
 
 
 const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
@@ -34,7 +34,7 @@ const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Datos personales</h1>
-                <HomeLink></HomeLink>
+                <BackLink></BackLink>
             </div>
             <RegisterMinor formData={formData} setFormData={setFormData}></RegisterMinor>
             <br/>

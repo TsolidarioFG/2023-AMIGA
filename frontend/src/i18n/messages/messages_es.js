@@ -34,7 +34,7 @@ export default {
     'project.users.ChangePassword.title': 'Cambiar contraseña',
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contraseña',
-    'project.users.SignUp.title': 'Registrarse',
+    'project.users.SignUp.title': 'Añadir nuevo técnico',
     'project.users.UpdateProfile.title': 'Actualizar perfil'
 
 }

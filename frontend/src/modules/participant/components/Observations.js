@@ -15,7 +15,7 @@ const Observations = ({ observations }) => {
         <List>
             {observations.map((item) => (
                 <ListItem key={item.id} onClick={() => handleChange(item.id)}>
-                    <Card className="item">
+                    <Card className="item" style={{ backgroundColor: 'lightyellow' }}>
                         <CardContent className="observation-header">
                             <Typography variant="subtitle1" >
                                 {item.date.split("-").reverse().join("-")}

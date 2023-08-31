@@ -143,7 +143,7 @@ const ObservationView = () => {
             ) : (
                 <>
                     <div className="row">
-                        <Card className="item">
+                        <Card className="item" style={{ backgroundColor: 'lightyellow' }}>
                             <CardContent>
                                 <div className="observation-header">
                                     <Typography variant="h5">

@@ -3,8 +3,10 @@ package es.udc.paproject.backend.rest.controllers;
 import static es.udc.paproject.backend.rest.dtos.UserConversor.toAuthenticatedUserDto;
 import static es.udc.paproject.backend.rest.dtos.UserConversor.toUser;
 import static es.udc.paproject.backend.rest.dtos.UserConversor.toUserDto;
+import static es.udc.paproject.backend.rest.dtos.UserConversor.toUserDtos;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.udc.paproject.backend.model.exceptions.DuplicateInstanceException;
@@ -77,6 +70,23 @@ public class UserController {
 
 		return new ErrorsDto(errorMessage);
 		
+	}
+
+	@GetMapping("/search")
+	public List<UserDto> searchUsers(@RequestParam String keyword) {
+		return toUserDtos(userService.searchUsers(keyword));
+	}
+
+	@PatchMapping("/promote/{id}")
+	public ResponseEntity<Void> promoteUser(@PathVariable Long id) {
+		userService.promoteUser(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@PatchMapping("/demote/{id}")
+	public ResponseEntity<Void> demoteUser(@PathVariable Long id) {
+		userService.demoteUser(id);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/signUp")
@@ -142,7 +152,11 @@ public class UserController {
 		userService.changePassword(id, params.getOldPassword(), params.getNewPassword());
 		
 	}
-	
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteUser(@PathVariable Long id) {
+		userService.deleteUser(id);
+	}
 	private String generateServiceToken(User user) {
 		
 		JwtInfo jwtInfo = new JwtInfo(user.getId(), user.getUserName(), user.getRole().toString());
@@ -150,5 +164,6 @@ public class UserController {
 		return jwtGenerator.generate(jwtInfo);
 		
 	}
-	
+
+
 }

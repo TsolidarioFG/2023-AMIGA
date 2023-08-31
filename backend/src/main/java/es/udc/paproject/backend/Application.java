@@ -41,5 +41,4 @@ public class Application {
         return bean;
         
     }
-
 }

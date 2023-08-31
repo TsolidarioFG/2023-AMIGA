@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class User {
 	
-	public enum RoleType {USER};
+	public enum RoleType {USER, ADMIN};
 
 	private Long id;
 	private String userName;
@@ -28,6 +28,15 @@ public class User {
 		this.lastName = lastName;
 		this.email = email;
 		
+	}
+
+	public User(String userName, String password, String firstName, String lastName, String email, RoleType role) {
+		this.userName = userName;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.role = role;
 	}
 
 	@Id

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, TextField, Button } from '@mui/material';
 import Box from "@mui/material/Box";
 import * as actions from "../actions"
+import * as appActions from "../../app/actions"
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
@@ -28,9 +29,9 @@ const GenerateStatitics = () => {
     };
 
     const handleExportExcel = () => {
-        actions.exportExcel(startDate, endDate);
-
+        dispatch(appActions.loading());
         dispatch(actions.getStatistics(startDate, endDate));
+        actions.exportExcel(startDate, endDate);
         navigate("/statistics/graphics");
 
     };

@@ -11,7 +11,7 @@ import {
     Dialog,
     DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
-import {Errors, HomeLink} from "../../common";
+import {BackLink, Errors} from "../../common";
 import {useSelector} from "react-redux";
 import * as selectors from "../selectors";
 import * as appSelectors from "../../app/selectors";
@@ -105,7 +105,7 @@ const WorkInsertion = () => {
         <div className="container">
             <div className="header">
                 <h3> {'Inserciones laborales ' + participant.name + ' ' + participant.surnames}</h3>
-                <HomeLink></HomeLink>
+                <BackLink></BackLink>
             </div>
 
             <br/>

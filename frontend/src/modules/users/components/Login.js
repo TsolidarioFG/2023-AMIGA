@@ -15,10 +15,10 @@ const Login = () => {
     const [backendErrors, setBackendErrors] = useState(null);
 
     const containerStyle = {
-        backgroundImage: `url(${process.env.PUBLIC_URL}/logopng.png)`,
+        backgroundImage: `url(${process.env.PUBLIC_URL}/portada-amiga.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '80vh',
+        height: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -5,8 +5,8 @@ import {
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import Autocomplete from "@mui/material/Autocomplete";
-import {Errors} from "../../common";
-import * as selectors from "../../app/selectors";
+import {Errors} from "../../../common";
+import * as selectors from "../../../app/selectors";
 import {useSelector} from "react-redux";
 import Typography from "@mui/material/Typography";
 import {Delete} from "@mui/icons-material";

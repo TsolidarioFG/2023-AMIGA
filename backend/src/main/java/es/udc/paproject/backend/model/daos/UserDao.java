@@ -1,5 +1,6 @@
 package es.udc.paproject.backend.model.daos;
 
+import java.util.List;
 import java.util.Optional;
 
 import es.udc.paproject.backend.model.entities.User;
@@ -10,5 +11,7 @@ public interface UserDao extends PagingAndSortingRepository<User, Long> {
 	boolean existsByUserName(String userName);
 
 	Optional<User> findByUserName(String userName);
+
+	List<User> findByFirstNameContainingOrLastNameContaining(String firstname, String lastname);
 	
 }

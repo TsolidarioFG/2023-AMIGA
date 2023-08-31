@@ -10,10 +10,10 @@ export const createObservation = ( data, onSuccess, onErrors) => {
 
 export const updateObservation = ( data, onSuccess) => {
 
-    appFetch(`/observation/update`, config('PUT', data), onSuccess);
+    appFetch(`/observation`, config('PUT', data), onSuccess);
 }
 
 export const deleteObservation = ( id, onSuccess) => {
 
-    appFetch(`/observation/delete?idObservation=${id}`, config('DELETE'), onSuccess);
+    appFetch(`/observation?idObservation=${id}`, config('DELETE'), onSuccess);
 }

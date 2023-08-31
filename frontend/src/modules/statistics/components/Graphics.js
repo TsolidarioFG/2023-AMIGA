@@ -1,18 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import GenderBarChart from './GenderBarChart';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import * as selector from "../selectors"
 import YearBarChart from "./YearBarChart";
 import CombineBarChart from "./CombineBarChart";
 import {useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
+import * as appActions from "../../app/actions"
 
 const Graphics = () => {
 
     const stats = useSelector(selector.getStatisticsState);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    if(stats === null)
+    useEffect(() => {
+        if (stats !== null) {
+            dispatch(appActions.loaded());
+        }
+    }, [stats, dispatch]);if(stats === null)
         return null;
 
     return (

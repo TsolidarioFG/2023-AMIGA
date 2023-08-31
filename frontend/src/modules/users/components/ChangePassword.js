@@ -27,7 +27,7 @@ const ChangePassword = () => {
                     user.id,
                     oldPassword,
                     newPassword,
-                    () => navigate('/'),
+                    () => navigate(-1),
                     errors => setBackendErrors(errors)
                 )
             );
@@ -59,7 +59,7 @@ const ChangePassword = () => {
     return (
         <div className="container">
             <div className="row">
-                <BackLink/>
+                <BackLink></BackLink>
             </div>
             <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
 

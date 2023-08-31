@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import './Form.css';
 import FormPage1Part1 from "./FormPage1Part1";
-import {Errors, HomeLink} from "../../../common";
+import {BackLink, Errors} from "../../../common";
 import FormPage1Part2 from "./FormPage1Part2";
 import {validarFormatoDNI, validarFormatoNIE} from "../../actions";
 
@@ -65,7 +65,7 @@ const FormPage1 = ({formData, setFormData, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Datos personales</h1>
-                <HomeLink></HomeLink>
+                <BackLink></BackLink>
             </div>
 
             <form onSubmit={handleSubmit}>

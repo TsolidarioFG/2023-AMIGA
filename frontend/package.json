@@ -1,7 +1,7 @@
 {
-  "name": "pa-project",
+  "name": "amiga-project",
   "version": "1.0.0",
-  "description": "PA Project",
+  "description": "AMIGA Project",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

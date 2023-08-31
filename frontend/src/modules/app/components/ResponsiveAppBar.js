@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import {Tab, Tabs} from "@mui/material";
 import {useState} from "react";
@@ -23,8 +23,6 @@ function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-    const location = useLocation();
-    const relativePath = location.pathname;
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -48,6 +46,15 @@ function ResponsiveAppBar() {
         navigate('/statistics');
         setAnchorElNav(null);
     }
+    const handleUsers = () => {
+        navigate('/users');
+        setAnchorElNav(null);
+    }
+
+    const handleVolunteers = () => {
+        navigate('/volunteers');
+        setAnchorElNav(null);
+    }
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
@@ -68,7 +75,13 @@ function ResponsiveAppBar() {
         setAnchorElUser(null);
     };
 
-    if(relativePath === "/")
+    const handleUpdateProfile = () => {
+        navigate('/users/update-profile');
+        setAnchorElUser(null);
+    };
+
+
+    if(user === null)
         return null
 
     return (
@@ -126,12 +139,14 @@ function ResponsiveAppBar() {
                             <MenuItem variant="contained" onClick={handleStatistics}>
                                 <Typography textAlign="center">Estadísticas</Typography>
                             </MenuItem>
-                            <MenuItem variant="contained" onClick={handleCloseNavMenu}>
+                            <MenuItem variant="contained" onClick={handleVolunteers}>
                                 <Typography textAlign="center">Voluntariado</Typography>
                             </MenuItem>
-                            <MenuItem variant="contained" onClick={handleCloseNavMenu}>
+                            { user.role === "ADMIN" &&
+                            <MenuItem variant="contained" onClick={handleUsers}>
                                 <Typography textAlign="center">Técnicos</Typography>
                             </MenuItem>
+                            }
                         </Menu>
                     </Box>
 
@@ -144,8 +159,9 @@ function ResponsiveAppBar() {
                         >
                             <Tab label="Participantes" onClick={handleParticipant} />
                             <Tab label="Estadísticas" onClick={handleStatistics} />
-                            <Tab label="Voluntariado" onClick={handleCloseNavMenu} />
-                            <Tab label="Técnicos" onClick={handleCloseNavMenu} />
+                            <Tab label="Voluntariado" onClick={handleVolunteers} />
+                            { user.role === "ADMIN" && <Tab label="Técnicos" onClick={handleUsers} />}
+
                         </Tabs>
                     </Box>
 
@@ -171,6 +187,9 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+                            <MenuItem onClick={handleUpdateProfile}>
+                                <Typography textAlign="center">Actualizar usuario</Typography>
+                            </MenuItem>
                             <MenuItem onClick={handleChangePassword}>
                                 <Typography textAlign="center">Cambiar contraseña</Typography>
                             </MenuItem>

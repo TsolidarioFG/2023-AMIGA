@@ -34,7 +34,7 @@ export default {
     'project.users.ChangePassword.title': 'Cambiar contrasinal',
     'project.users.Login.title': 'Autenticarse',
     'project.users.SignUp.fields.confirmPassword': 'Confirmar contrasinal',
-    'project.users.SignUp.title': 'Rexistrarse',
+    'project.users.SignUp.title': 'Añadir novo técnico',
     'project.users.UpdateProfile.title': 'Actualizar perfil'
 
 }

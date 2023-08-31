@@ -1,7 +1,12 @@
 package es.udc.paproject.backend.model.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import es.udc.paproject.backend.model.entities.Volunteer;
 import es.udc.paproject.backend.model.exceptions.IncorrectLoginException;
 import es.udc.paproject.backend.model.exceptions.IncorrectPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +31,51 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserDao userDao;
-	
+
+	@Override
+	public List<User> searchUsers(String keyword) {
+		if(keyword == null || keyword.trim().length() == 0)
+			return StreamSupport.stream(userDao.findAll().spliterator(), false)
+					.collect(Collectors.toList());
+
+		String[] words = keyword.split(" ");
+
+		if (words.length > 1) {
+			List<User> result = new ArrayList<>();
+			boolean isFirstElement = true;
+
+			for (String word : words) {
+				if (isFirstElement) {
+					isFirstElement = false;
+					result = userDao.findByFirstNameContainingOrLastNameContaining(word, word);
+				}
+
+				result.retainAll(userDao.findByFirstNameContainingOrLastNameContaining(word, word));
+			}
+
+			return result;
+		}
+		return userDao.findByFirstNameContainingOrLastNameContaining(keyword, keyword);
+	}
+
+	@Override
+	public void promoteUser(Long userId) {
+		userDao.findById(userId).map( user -> {
+			user.setRole(User.RoleType.ADMIN);
+			userDao.save(user);
+			return null;
+		});
+	}
+
+	@Override
+	public void demoteUser(Long userId) {
+		userDao.findById(userId).map( user -> {
+			user.setRole(User.RoleType.USER);
+			userDao.save(user);
+			return null;
+		});
+	}
+
 	@Override
 	public void signUp(User user) throws DuplicateInstanceException {
 		
@@ -35,8 +84,7 @@ public class UserServiceImpl implements UserService {
 		}
 			
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setRole(User.RoleType.USER);
-		
+
 		userDao.save(user);
 		
 	}
@@ -90,6 +138,11 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(passwordEncoder.encode(newPassword));
 		}
 		
+	}
+
+	@Override
+	public void deleteUser(Long idUser) {
+		userDao.deleteById(idUser);
 	}
 
 }

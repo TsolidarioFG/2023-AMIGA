@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>es.udc.paproject</groupId>
-    <artifactId>pa-project-backend</artifactId>
+    <groupId>es.udc.tsolidariofg</groupId>
+    <artifactId>amiga-project-backend</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     
@@ -57,9 +57,7 @@
 
                 <!--  Data source properties -->
                 <dataSource.url>jdbc:mysql://localhost:3306/amiga?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Europe/Madrid</dataSource.url>
-                <testDataSource.url>jdbc:mysql://localhost:3307/amiga-test?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Europe/Madrid</testDataSource.url>
-                <dataSource.createTablesScript>1-MySQLCreateTables.sql</dataSource.createTablesScript>
-                <dataSource.createDataScript>2-MySQLCreateData.sql</dataSource.createDataScript>
+                <testDataSource.url>jdbc:mysql://localhost:3307/amigaTest?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Europe/Madrid</testDataSource.url>
             </properties>
         </profile>
     </profiles>
@@ -111,13 +109,18 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>${apache-poi-version}</version> <!-- Actualiza a la última versión disponible -->
+            <version>${apache-poi-version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apache-poi-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.15</version>
         </dependency>
     </dependencies>
 

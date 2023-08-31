@@ -1,63 +1,65 @@
-import React from 'react';
-import { useSelector } from "react-redux";
-import {List, ListItem, ListItemIcon, ListItemText, Paper} from '@mui/material';
-import {AddCircle, NoteAdd, Visibility, WorkHistory} from '@mui/icons-material';
-import * as selectors from "../selectors"
-import "./Participant.css";
-import {useNavigate} from "react-router-dom";
+import React, {useState} from 'react';
+import {
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    IconButton,
+} from '@mui/material';
+import {Menu as MenuIcon, NoteAdd, Visibility, WorkHistory} from '@mui/icons-material';
+import {useNavigate} from 'react-router-dom';
 
-const Menu = ({user}) => {
+const Menu = ({participant}) => {
     const navigate = useNavigate();
-    const date = new Date();
-    const participant = useSelector(selectors.getParticipantData);
-
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     const handleEdit = () => {
-      navigate('/participant/workInsertion/' + participant.idParticipant)
-    }
+        navigate('/participant/workInsertion/' + participant.idParticipant);
+    };
 
     const handleViewData = () => {
         navigate('/participant/data');
-    }
-
-    const handleNewAnnualData = () => {
-        navigate('/participant/newAnnualData');
-    }
+    };
 
     const handleObservationForm = () => {
-        navigate("/participant/observationForm");
-    }
+        navigate('/participant/observationForm');
+    };
+
+    const toggleDrawer = () => {
+        setOpenDrawer(!openDrawer);
+    };
 
     return (
-        <Paper className="toolbar">
-            <List>
-                <ListItem button onClick={handleViewData}>
-                    <ListItemIcon>
-                        <Visibility/>
-                    </ListItemIcon>
-                    <ListItemText primary="Datos"/>
-                </ListItem>
-                <ListItem button disabled={date.getFullYear() !== Math.max(...user.yearList)} onClick={handleEdit}>
-                    <ListItemIcon>
-                        <WorkHistory/>
-                    </ListItemIcon>
-                    <ListItemText primary="Inserciones laborales"/>
-                </ListItem>
-                <ListItem button disabled={ Math.max(...user.yearList) === date.getFullYear()} onClick={handleNewAnnualData}>
-                    <ListItemIcon>
-                        <AddCircle/>
-                    </ListItemIcon>
-                    <ListItemText primary="Nueva Inscripción Anual"/>
-                </ListItem>
-                <ListItem button onClick={handleObservationForm}>
-                    <ListItemIcon>
-                        <NoteAdd/>
-                    </ListItemIcon>
-                    <ListItemText primary="Añadir Atención"/>
-                </ListItem>
+        <div>
 
-            </List>
-        </Paper>
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
+                <MenuIcon/>
+            </IconButton>
+
+            <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer}>
+                <List style={{width: '250px'}}>
+                    <ListItem button onClick={handleViewData}>
+                        <ListItemIcon>
+                            <Visibility/>
+                        </ListItemIcon>
+                        <ListItemText primary="Datos"/>
+                    </ListItem>
+                    <ListItem button onClick={handleEdit}>
+                        <ListItemIcon>
+                            <WorkHistory/>
+                        </ListItemIcon>
+                        <ListItemText primary="Inserciones laborales"/>
+                    </ListItem>
+                    <ListItem button onClick={handleObservationForm}>
+                        <ListItemIcon>
+                            <NoteAdd/>
+                        </ListItemIcon>
+                        <ListItemText primary="Añadir Atención"/>
+                    </ListItem>
+                </List>
+            </Drawer>
+        </div>
     );
 };
 

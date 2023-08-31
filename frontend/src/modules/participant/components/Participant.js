@@ -79,8 +79,9 @@ function Participant() {
                     Registrar participante
                 </Button>
             </div>
+            <h3> {'Buscador participantes'}</h3>
             <form onSubmit={handleFind}>
-                <div className="participant-container">
+                <div className="row-container">
                     <FormControl className="item" style={{position: 'relative'}}>
                         <InputLabel id="attribute-label">Seleccionar filtro</InputLabel>
                         <Select

@@ -7,9 +7,10 @@ const BackLink = () => {
     const navigate = useNavigate();
 
     return (
-        <Button variant="contained" onClick={() => navigate("/participant/details")}>Anterior</Button>
+        <Button variant="contained" onClick={() => navigate(-1)}>Cancelar</Button>
 
     );
+
 };
 
 export default BackLink;

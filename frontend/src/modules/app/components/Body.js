@@ -2,7 +2,7 @@ import {useSelector} from 'react-redux';
 import {Route, Routes} from 'react-router-dom';
 
 import AppGlobalComponents from './AppGlobalComponents';
-import {Login, UpdateProfile, ChangePassword} from '../../users';
+import {Login, UpdateProfile, ChangePassword, SignUp, UserTable} from '../../users';
 import {
     Participant,
     FormParticipant,
@@ -14,6 +14,9 @@ import {
 import "./Body.css"
 import users from '../../users';
 import {GenerateStatistics, Graphics} from "../../statistics";
+import VolunteerComponent from "../../volunteer/components/VolunteerComponent";
+import VolunteerForm from "../../volunteer/components/VolunteerForm";
+import VolunteerDetails from "../../volunteer/components/VolunteerDetails";
 
 const Body = () => {
 
@@ -39,6 +42,11 @@ const Body = () => {
                 {loggedIn && <Route path="/statistics/graphics" element={<Graphics/>}></Route>}
                 {loggedIn && <Route path="/users/update-profile" element={<UpdateProfile/>}/>}
                 {loggedIn && <Route path="/users/change-password" element={<ChangePassword/>}/>}
+                {loggedIn && <Route path="/users/register" element={<SignUp/>}/>}
+                {loggedIn && <Route path="/users" element={<UserTable/>}/>}
+                {loggedIn && <Route path="/volunteers" element={<VolunteerComponent/>}/>}
+                {loggedIn && <Route path="/volunteers/form" element={<VolunteerForm/>}/>}
+                {loggedIn && <Route path="/volunteers/:id" element={<VolunteerDetails/>}></Route>}
             </Routes>
         </div>
 

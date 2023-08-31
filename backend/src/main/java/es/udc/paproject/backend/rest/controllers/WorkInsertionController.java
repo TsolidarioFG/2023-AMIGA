@@ -19,12 +19,12 @@ public class WorkInsertionController {
     @Autowired
     private WorkInsertionService workInsertionService;
 
-    @PostMapping("/create")
+    @PostMapping()
     ResponseEntity<WorkInsertionDto> createWorkInsertion(@RequestBody WorkInsertionDto workInsertionDto) {
         return ResponseEntity.ok(toWorkInsertionDto(workInsertionService.createWorkInsertion(workInsertionDto)));
     }
 
-    @GetMapping("/get")
+    @GetMapping()
     ResponseEntity<BlockDto<WorkInsertionDto>> getWorkInsertion(
             @RequestParam(required = false) Long idParticipant,
             @RequestParam(defaultValue = "0") int page) {
@@ -34,12 +34,12 @@ public class WorkInsertionController {
         return ResponseEntity.ok(new BlockDto<>(toWorkInsertionDtos(workInsertionBlock.getItems()), workInsertionBlock.getExistMoreItems()));
     }
 
-    @PutMapping("/update")
+    @PutMapping()
     ResponseEntity<WorkInsertionDto> updateWorkInsertion(@RequestBody WorkInsertionDto workInsertionDto) {
         return ResponseEntity.ok(toWorkInsertionDto(workInsertionService.updateWorkInsertion(workInsertionDto)));
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping()
     ResponseEntity<Void> deleteWorkInsertion(@RequestParam Long idWorkInsertion) {
 
         workInsertionService.deleteWorkInsertion(idWorkInsertion);

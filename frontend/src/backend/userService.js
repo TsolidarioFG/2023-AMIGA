@@ -45,8 +45,21 @@ export const updateProfile = (user, onSuccess, onErrors) =>
     appFetch(`/users/${user.id}`, config('PUT', user),
         onSuccess, onErrors);
 
+export const search = (keyword, onSuccess) =>
+    appFetch(`/users/search?keyword=${keyword}`, config('GET'),
+        onSuccess);
+
 export const changePassword = (id, oldPassword, newPassword, onSuccess,
     onErrors) =>
     appFetch(`/users/${id}/changePassword`, 
         config('POST', {oldPassword, newPassword}),
         onSuccess, onErrors);
+
+export const promoteUser = (id, onSucess) =>
+    appFetch(`/users/promote/${id}`, config('PATCH'), onSucess);
+
+export const demoteUser = (id, onSucess) =>
+    appFetch(`/users/demote/${id}`, config('PATCH'), onSucess);
+
+export const deleteUser = (id, onSucess) =>
+    appFetch(`/users/${id}`, config('DELETE'), onSucess);

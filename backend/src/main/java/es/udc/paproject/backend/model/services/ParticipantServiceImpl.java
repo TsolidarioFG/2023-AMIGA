@@ -99,6 +99,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     public ParticipantDto saveAnnualData(ParticipantDto participantDto) {
         Participant participant = participantDao.findById(participantDto.getIdParticipant()).orElse(null);
+        AnnualData annualData = new AnnualData();
+        annualData.setParticipant(participant);
 
         if (participant == null)
             return null;
@@ -110,9 +112,16 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
         participant.addYear(LocalDate.now().getYear());
 
-        AnnualData annualData = new AnnualData();
-        annualData.setParticipant(participant);
         setAnnualData(participantDto, annualData);
+
+        Set<Participant_program> participantProgramList =
+                annualDataDao.getAnnualData(participant.getId(), Collections.max(participant.getYearList())).getPrograms();
+
+        for (Participant_program program : participantProgramList) {
+            if (!isPresentProgram(participantDto.getPrograms(), program.getId())) {
+                participantProgramDao.deleteById(program.getId());
+            }
+        }
 
         for (Participant_ProgramDto program : participantDto.getPrograms()) {
             participantProgramDao.save(new Participant_program(annualData, selectorService.getProgram(program.getProgram()), program.isItinerary()));
@@ -137,6 +146,14 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (annualData == null)
             return null;
 
+        List<Kid> kids = participant.getKids();
+
+        for (Kid kid : kids) {
+            if (!isPresentKid( participantDto.getKids(), kid.getId())) {
+                kidDao.deleteById(kid.getId());
+            }
+        }
+
         for (KidDto kidDto : participantDto.getKids()) {
             if (kidDto.getId() == null)
                 kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
@@ -145,7 +162,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         Set<Participant_program> participantProgramList = annualData.getPrograms();
 
         for (Participant_program program : participantProgramList) {
-            if (!isPresent(participantDto.getPrograms(), program.getId())) {
+            if (!isPresentProgram(participantDto.getPrograms(), program.getId())) {
                 participantProgramDao.deleteById(program.getId());
             }
         }
@@ -196,9 +213,18 @@ public class ParticipantServiceImpl implements ParticipantService {
 
                 ParticipantExcelDto participantExcelDto = new ParticipantExcelDto(participant, annualData);
                 participantExcelDto.setNumberInsertion(workInsertionDao.countWorkInsertions(participant, startDate, endDate));
+                StringBuilder programs = new StringBuilder();
+
+                for(Participant_program program : annualData.getPrograms()) {
+                    programs.append(program.getProgram().getName());
+                    programs.append("; ");
+                }
+                participantExcelDto.setPrograms(programs.toString());
+
                 excelDtoList.add(participantExcelDto);
 
-                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen, nationalitiesCountWoman, participant, annualData);
+                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen,
+                        nationalitiesCountWoman, participant, annualData);
             }
         }
 
@@ -249,7 +275,7 @@ public class ParticipantServiceImpl implements ParticipantService {
                         lastYearInRange = year;
                     }
                 }
-                Period period = Period.between(currentDate, participant.getBirthDate());
+                Period period = Period.between(participant.getBirthDate(), currentDate);
                 int year = period.getYears();
 
                 if (participant.getGender() == Gender.H) {
@@ -281,7 +307,8 @@ public class ParticipantServiceImpl implements ParticipantService {
 
                 AnnualData annualData = annualDataDao.getAnnualData(participant.getId(), lastYearInRange);
 
-                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen, nationalitiesCountWoman, participant, annualData);
+                generateStadistics(exclusionFactorCountMen, exclusionFactorCountWoman, nationalitiesCountMen,
+                        nationalitiesCountWoman, participant, annualData);
             }
         }
 
@@ -334,8 +361,17 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
     }
 
-    private boolean isPresent(List<Participant_ProgramDto> list, Long id) {
+    private boolean isPresentProgram(List<Participant_ProgramDto> list, Long id) {
         for (Participant_ProgramDto item : list) {
+            if (Objects.equals(item.getId(), id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isPresentKid(List<KidDto> list, Long id) {
+        for (KidDto item : list) {
             if (Objects.equals(item.getId(), id)) {
                 return true;
             }

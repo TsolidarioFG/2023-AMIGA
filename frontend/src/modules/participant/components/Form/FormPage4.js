@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as selectors from "../../../app/selectors";
 import "./Form.css";
-import {Errors, HomeLink} from "../../../common";
-import Programs from "../Programs";
+import {BackLink, Errors} from "../../../common";
+import Programs from "./Programs";
 
 const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
     const demands = useSelector(selectors.getDemands);
@@ -52,7 +52,7 @@ const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Tipo demanda</h1>
-                <HomeLink></HomeLink>
+                <BackLink></BackLink>
             </div>
             <Programs formData={formData} setFormData={setFormData}></Programs>
             <form onSubmit={handleSubmit}>

@@ -37,11 +37,11 @@ public class ObservationController {
                 observationBlock.getExistMoreItems()));
     }
 
-    @PutMapping("/update")
+    @PutMapping()
     ResponseEntity<ObservationDto> updateObservation(@RequestBody ObservationDto observationDto){
         return ResponseEntity.ok(toObservationDto(observationService.updateObservation(observationDto)));
     }
-    @DeleteMapping("/delete")
+    @DeleteMapping()
     ResponseEntity<Void> deleteObservation(@RequestParam Long idObservation){
 
         observationService.deleteObservation(idObservation);

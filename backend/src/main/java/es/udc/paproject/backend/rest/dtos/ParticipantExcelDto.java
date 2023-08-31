@@ -9,7 +9,7 @@ import java.time.Period;
 public class ParticipantExcelDto {
 
     private LocalDate date;
-    private String programs;
+    private String demand;
     private String situation;
     private String returned;
     private String pi;
@@ -27,13 +27,14 @@ public class ParticipantExcelDto {
     private int numberInsertion;
     private String phone;
     private String email;
+    private String programs;
 
     public ParticipantExcelDto() {
     }
 
     public ParticipantExcelDto(Participant participant, AnnualData annualData) {
         this.date = annualData.getDate();
-        this.programs = annualData.getDemand().getName();
+        this.demand = annualData.getDemand().getName();
         this.situation = annualData.getSituation().toString();
 
         if(annualData.isReturned())
@@ -51,7 +52,7 @@ public class ParticipantExcelDto {
         this.birthdate = participant.getBirthDate();
 
         LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(currentDate, participant.getBirthDate());
+        Period period = Period.between(participant.getBirthDate(), currentDate);
         this.year = period.getYears();
 
         this.sex = participant.getGender().toString();
@@ -82,12 +83,12 @@ public class ParticipantExcelDto {
         this.date = date;
     }
 
-    public String getPrograms() {
-        return programs;
+    public String getDemand() {
+        return demand;
     }
 
-    public void setPrograms(String programs) {
-        this.programs = programs;
+    public void setDemand(String demand) {
+        this.demand = demand;
     }
 
     public String getSituation() {
@@ -224,5 +225,13 @@ public class ParticipantExcelDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(String programs) {
+        this.programs = programs;
     }
 }

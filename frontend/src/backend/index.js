@@ -4,9 +4,10 @@ import * as selectors from './selectorsService'
 import * as participant from './participantService';
 import * as observation from './observationService';
 import * as work from './workingInsertionsService';
+import * as volunteer from './volunteerService';
 
 export {default as NetworkError} from "./NetworkError";
 
 
 // eslint-disable-next-line
-export default {init, userService, selectors, participant, observation, work};
+export default {init, userService, selectors, participant, observation, work, volunteer};
