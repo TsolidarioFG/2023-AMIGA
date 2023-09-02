@@ -1,6 +1,6 @@
 # AMIGA Project 
 
-Para conocer los detalles de la aplicación cosultar la carperta documentation. En este fichero se detallan los requerimientos
+Para conocer los detalles de la aplicación cosultar la carperta documentation. En este readme se detallan los requerimientos
 y los pasos a seguir para llevar a cabo el despliegue de la aplicación y para su ejecución en local para su desarrollo.
 
 # Para Despliegue 
