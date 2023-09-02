@@ -32,7 +32,7 @@ Terminado este proceso ejecutar:
 mvn clean package -DskipTests
 ```
 
-Esto creará el jar que contiene la aplicación en 2023-AMIGA\backend\target\amiga-backend-1.0.0.jar. 
+Esto creará el jar que contiene la aplicación en la ruta 2023-AMIGA\backend\target\amiga-backend-1.0.0.jar. 
 Para lanzar la aplicación ejecutar desde esa carpeta:
 
 ```
