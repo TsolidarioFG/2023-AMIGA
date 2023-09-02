@@ -29,6 +29,8 @@ public class ParticipantExcelDto {
     private String email;
     private String programs;
 
+    private String itinerary;
+
     public ParticipantExcelDto() {
     }
 
@@ -233,5 +235,16 @@ public class ParticipantExcelDto {
 
     public void setPrograms(String programs) {
         this.programs = programs;
+    }
+
+    public String getItinerary() {
+        return itinerary;
+    }
+
+    public void setItinerary(Boolean itinerary) {
+        if(itinerary)
+            this.itinerary = "SI";
+        else
+            this.itinerary = "NO";
     }
 }

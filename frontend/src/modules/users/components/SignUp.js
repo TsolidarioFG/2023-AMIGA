@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useRef} from 'react';
+import {useDispatch} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
+import {useNavigate} from 'react-router-dom';
 import {
     Card,
     CardHeader,
@@ -15,7 +15,7 @@ import {
     InputLabel
 } from '@mui/material';
 import {BackLink, Errors} from '../../common';
-import * as actions from '../actions';
+import backend from "../../../backend";
 
 const SignUp = () => {
     const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const SignUp = () => {
 
         if (formRef.current.checkValidity()) {
             dispatch(
-                actions.signUp(
+                backend.userService.signUp(
                     {
                         userName: userName.trim(),
                         firstName: firstName.trim(),
@@ -43,10 +43,6 @@ const SignUp = () => {
                     },
                     () => navigate('/users'),
                     (errors) => setBackendErrors(errors),
-                    () => {
-                        navigate('/users/login');
-                        dispatch(actions.logout());
-                    }
                 )
             );
         } else {
@@ -61,10 +57,10 @@ const SignUp = () => {
                 <BackLink></BackLink>
             </div>
             <br/>
-            <Errors errors={backendErrors} onClose={() => setBackendErrors(null)} />
+            <Errors errors={backendErrors} onClose={() => setBackendErrors(null)}/>
             <Card elevation={3} className="card bg-light border-dark">
                 <CardHeader
-                    title={<FormattedMessage id="project.users.SignUp.title" />}
+                    title={<FormattedMessage id="project.users.SignUp.title"/>}
                     className="card-header"
                 />
                 <CardContent className="card-body">
@@ -78,7 +74,7 @@ const SignUp = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     fullWidth
-                                    label={<FormattedMessage id="project.global.fields.userName" />}
+                                    label={<FormattedMessage id="project.global.fields.userName"/>}
                                     value={userName}
                                     onChange={(e) => setUserName(e.target.value)}
                                     autoFocus
@@ -88,7 +84,7 @@ const SignUp = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     fullWidth
-                                    label={<FormattedMessage id="project.global.fields.firstName" />}
+                                    label={<FormattedMessage id="project.global.fields.firstName"/>}
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     required
@@ -97,7 +93,7 @@ const SignUp = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     fullWidth
-                                    label={<FormattedMessage id="project.global.fields.lastName" />}
+                                    label={<FormattedMessage id="project.global.fields.lastName"/>}
                                     value={lastName}
                                     onChange={(e) => setLastName(e.target.value)}
                                     required
@@ -106,7 +102,7 @@ const SignUp = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     fullWidth
-                                    label={<FormattedMessage id="project.global.fields.email" />}
+                                    label={<FormattedMessage id="project.global.fields.email"/>}
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -116,7 +112,7 @@ const SignUp = () => {
                             <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
                                     <InputLabel id="user-type-label">
-                                        <FormattedMessage id="Tipo usuario" />
+                                        Tipo usuario
                                     </InputLabel>
                                     <Select
                                         labelId="user-type-label"
@@ -131,7 +127,7 @@ const SignUp = () => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid container justifyContent="center" alignItems="center" style={{ marginTop: '30px' }}>
+                            <Grid container justifyContent="center" alignItems="center" style={{marginTop: '30px'}}>
                                 <Grid item xs={12} md={6}>
                                     <Button
                                         type="submit"
@@ -139,7 +135,7 @@ const SignUp = () => {
                                         color="primary"
                                         fullWidth
                                     >
-                                        <FormattedMessage id="project.users.SignUp.title" />
+                                        <FormattedMessage id="project.users.SignUp.title"/>
                                     </Button>
                                 </Grid>
                             </Grid>

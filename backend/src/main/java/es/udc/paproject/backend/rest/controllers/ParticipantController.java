@@ -77,7 +77,7 @@ public class ParticipantController {
 
         String[] headers = {"Fecha", "Demanda", "Situacion", "Retornado", "Pi", "dni/nie/pas", "Nombre", "Apellidos", "Edad",
                 "Fecha nacimiento", "Genero", "Pais origen", "Municipio", "Provincia", "Telefono", "Correo",
-                "Nivel de estudios", "Situacion laboral", "Numero inserciones", "Programas"};
+                "Nivel de estudios", "Situacion laboral", "Numero inserciones", "Programas", "En itinerario"};
 
         try (Workbook workbook = WorkbookFactory.create(true)) {
             Sheet sheet = workbook.createSheet("Participantes");
@@ -196,8 +196,10 @@ public class ParticipantController {
             cell.setCellValue(participantExcelDto.getWorkSituation());
             cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getNumberInsertion());
-            cell = row.createCell(cellIndex);
+            cell = row.createCell(cellIndex++);
             cell.setCellValue(participantExcelDto.getPrograms());
+            cell = row.createCell(cellIndex);
+            cell.setCellValue(participantExcelDto.getItinerary());
         }
 
         for (int i = 0; i < headers.length; i++) {

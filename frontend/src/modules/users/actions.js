@@ -1,13 +1,6 @@
 import * as actionTypes from './actionTypes';
 import backend from '../../backend';
 
-
-export const signUp = (user, onSuccess, onErrors, reauthenticationCallback)  =>
-    backend.userService.signUp(user,
-        onSuccess(),
-        onErrors,
-        reauthenticationCallback);
-
 const loginCompleted = authenticatedUser => ({
     type: actionTypes.LOGIN_COMPLETED,
     authenticatedUser

@@ -214,12 +214,16 @@ public class ParticipantServiceImpl implements ParticipantService {
                 ParticipantExcelDto participantExcelDto = new ParticipantExcelDto(participant, annualData);
                 participantExcelDto.setNumberInsertion(workInsertionDao.countWorkInsertions(participant, startDate, endDate));
                 StringBuilder programs = new StringBuilder();
+                boolean itinerary = false;
 
                 for(Participant_program program : annualData.getPrograms()) {
                     programs.append(program.getProgram().getName());
                     programs.append("; ");
+                    if(program.isItinerary())
+                        itinerary = true;
                 }
                 participantExcelDto.setPrograms(programs.toString());
+                participantExcelDto.setItinerary(itinerary);
 
                 excelDtoList.add(participantExcelDto);
 
@@ -353,7 +357,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
     }
 
-    private void getStatistics(Map<String, Integer> mapCountMen, Map<String, Integer> mapCountWoman, Participant participant, String name) {
+    private void getStatistics(Map<String, Integer> mapCountMen, Map<String, Integer> mapCountWoman,
+                               Participant participant, String name) {
         if (participant.getGender() == Gender.H) {
             mapCountMen.put(name, mapCountMen.getOrDefault(name, 0) + 1);
         } else if (participant.getGender() == Gender.M) {
