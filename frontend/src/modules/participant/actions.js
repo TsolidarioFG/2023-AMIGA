@@ -1,7 +1,29 @@
 import * as actionTypes from "./actionTypes";
 import backend from "../../backend";
 
-export const findParticipantCompleted = participant => ({
+const updateParticipantCompleted = participant => ({
+    type: actionTypes.UPDATE_PARTICIPANT_COMPLETED,
+    participant
+});
+
+export const saveAnnualData = (data, onSucess, onErrors) => (dispatch) => {
+    backend.participant.saveAnnualData(data,
+        (participant) => {
+            dispatch(updateParticipantCompleted(participant));
+            onSucess();
+        }, onErrors
+    );
+}
+
+export const updateParticipant = (data, onSucess, onErrors) => (dispatch) => {
+    backend.participant.updateParticipant(data,
+        (participant) => {
+            dispatch(updateParticipantCompleted(participant));
+            onSucess();
+        }, onErrors
+    );
+}
+const findParticipantCompleted = participant => ({
     type: actionTypes.FIND_PARTICIPANT_DATA_COMPLETED,
     participant
 });

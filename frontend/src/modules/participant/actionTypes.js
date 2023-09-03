@@ -5,3 +5,5 @@ export const ADD_OBSERVATION = "project/participant/addObservation";
 export const CLEAR_OBSERVATIONS = "project/participant/findClearObservation";
 
 export const FIND_PARTICIPANT_DATA_COMPLETED = "project/participant/findParticipantDataCompleted";
+
+export const UPDATE_PARTICIPANT_COMPLETED = "project/participant/updateParticipantCompleted";

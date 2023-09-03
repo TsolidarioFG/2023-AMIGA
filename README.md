@@ -16,7 +16,9 @@ y los pasos a seguir para llevar a cabo el despliegue de la aplicación y para s
 
 ### Creación base de datos
 
-Instalar mysql y ejecutar el script Database.sql que está en la carpeta sql del backend.
+Instalar mysql y ejecutar el script Database.sql que está en la carpeta sql del backend. Si deseas 
+cambiar el nombre del esquema MySQL generado, debes modificar la sentencia de "CREATE DATABASE" y la 
+sentencia "USE" que se encuentran al principio del script.
 
 ### Configuración del back
 

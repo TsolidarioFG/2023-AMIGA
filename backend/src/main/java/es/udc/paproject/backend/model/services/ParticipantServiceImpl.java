@@ -110,12 +110,17 @@ public class ParticipantServiceImpl implements ParticipantService {
             if (kidDto.getId() == null)
                 kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
         }
-        participant.addYear(LocalDate.now().getYear());
+
 
         setAnnualData(participantDto, annualData);
 
         Set<Participant_program> participantProgramList =
-                annualDataDao.getAnnualData(participant.getId(), Collections.max(participant.getYearList())).getPrograms();
+                annualDataDao.getAnnualData(participant.getId(),
+                        Collections.max(participant.getYearList())).getPrograms();
+
+        participant.addYear(LocalDate.now().getYear());
+        participantDao.save(participant);
+        annualDataDao.save(annualData);
 
         for (Participant_program program : participantProgramList) {
             if (!isPresentProgram(participantDto.getPrograms(), program.getId())) {
@@ -127,8 +132,7 @@ public class ParticipantServiceImpl implements ParticipantService {
             participantProgramDao.save(new Participant_program(annualData, selectorService.getProgram(program.getProgram()), program.isItinerary()));
         }
 
-        participantDao.save(participant);
-        annualDataDao.save(annualData);
+
         observationDao.save(new Observation(LocalDate.now(), "Acogida año " + LocalDate.now().getYear(), participantDto.getObservation(), participant, ObservationType.GENERAL));
 
         return participantMapper.toParticipantDto(participant, annualDataDao.save(annualData));

@@ -6,7 +6,6 @@ import * as selectors from "../../selectors"
 import {useDispatch, useSelector} from "react-redux";
 import FormPage1Continue from "./FormPage2";
 import {format} from "date-fns";
-import backend from "../../../../backend";
 import * as actions from "../../actions";
 import FormConfirm from "./FormConfirm";
 
@@ -76,11 +75,7 @@ const NewAnnualData = () => {
         observation: ''
     });
     function backendCall(onSucess, onErrors) {
-        backend.participant.createParticipant(
-            formData, data => {
-                onSucess();
-                dispatch(actions.findParticipantCompleted(data));
-            }, onErrors);
+        dispatch(actions.saveAnnualData(formData, onSucess, onErrors));
     }
 
     const nextPage = () => {

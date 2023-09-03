@@ -56,7 +56,7 @@ const ParticipantDetails = () => {
                 <Alert elevation={3} color="info" style={{marginBottom: '20px'}} className="banner"
                        onClick={handleNewAnnualData}>
                     <Typography variant="h6" align="center">
-                        Haz click para registrar datos nuevo año
+                        Haz click para registrar datos año actual
                     </Typography>
                 </Alert>
                 : null

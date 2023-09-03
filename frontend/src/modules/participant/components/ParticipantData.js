@@ -10,7 +10,6 @@ import './Participant.css'
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-import {BackLink} from "../../common";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import ParticipantPdfData from "./ParticipantPdfData";
@@ -179,7 +178,7 @@ const ParticipantData = () => {
 
         <div className="container">
             <div className="separed-container">
-                <BackLink></BackLink>
+                <Button variant="contained" onClick={() => navigate('/participant/details')}>Volver</Button>
                 <Button variant="contained" onClick={handleEdit}>Editar</Button>
             </div>
             <div className="header-details">
@@ -188,7 +187,7 @@ const ParticipantData = () => {
                 </Typography>
                 <div className="space"></div>
                 <Autocomplete
-                    className="item"
+                    className="drawerPaper"
                     options={user.yearList}
                     getOptionLabel={(option) => option.toString()}
                     value={year}

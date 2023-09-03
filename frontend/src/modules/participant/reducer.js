@@ -31,7 +31,8 @@ const participant = (state = initialState.participant, action) => {
 
         case actionTypes.FIND_PARTICIPANT_DATA_COMPLETED:
             return action.participant;
-
+        case actionTypes.UPDATE_PARTICIPANT_COMPLETED:
+            return action.participant;
         default:
             return state;
 

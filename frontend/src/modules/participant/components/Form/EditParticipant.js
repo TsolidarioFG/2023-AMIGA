@@ -5,7 +5,6 @@ import FormPage1 from "./FormPage1";
 import * as selectors from "../../selectors"
 import {useDispatch, useSelector} from "react-redux";
 import FormPage1Continue from "./FormPage2";
-import backend from "../../../../backend";
 import FormConfirm from "./FormConfirm";
 import * as actions from "../../actions";
 
@@ -76,11 +75,7 @@ const FormContainer = () => {
     });
 
     function backendCall(onSucess, onErrors) {
-        backend.participant.updateParticipant(
-            formData, data => {
-                onSucess();
-                dispatch(actions.findParticipantCompleted(data));
-            }, onErrors);
+        dispatch(actions.updateParticipant(formData, onSucess, onErrors));
     }
 
     const nextPage = () => {
