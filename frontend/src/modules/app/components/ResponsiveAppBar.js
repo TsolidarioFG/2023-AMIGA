@@ -100,7 +100,10 @@ function ResponsiveAppBar() {
                             marginTop: 2,
                             marginBottom: 1
                         }}
-                        onClick={() => navigate('/participant')}
+                        onClick={() => {
+                            navigate('/participant');
+                            setValue(0);
+                        }}
                     />
                     <div className="space"></div>
 
