@@ -67,6 +67,7 @@ const FormContainer = () => {
         derivation: '',
         observation: ''
     });
+    const exit = '/participant';
 
     const nextPage = () => {
         setCurrentPage(currentPage + 1);
@@ -90,6 +91,7 @@ const FormContainer = () => {
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
+                        exit={exit}
                     />
 
                 );
@@ -101,6 +103,7 @@ const FormContainer = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
+                        exit={exit}
                     />
 
                 );
@@ -112,6 +115,7 @@ const FormContainer = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
+                        exit={exit}
                     />
 
                 );
@@ -123,6 +127,7 @@ const FormContainer = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
+                        exit={exit}
                     />
 
                 );
@@ -133,6 +138,8 @@ const FormContainer = () => {
                         formData={formData}
                         previousPage={previousPage}
                         submitAction={backendCall}
+                        exit={exit}
+                        updateObservations={false}
                     ></FormConfirm>
 
                 );

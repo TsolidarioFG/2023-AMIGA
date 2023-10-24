@@ -70,7 +70,7 @@ const RegisterMinor = ({ formData, setFormData }) => {
             return;
         }
 
-        const kidList = formData.kids;
+        const kidList = [...formData.kids];
         kidList.push(newChild)
         setFormData({ ...formData, kids: kidList});
 

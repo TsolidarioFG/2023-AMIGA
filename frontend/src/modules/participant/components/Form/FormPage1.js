@@ -3,11 +3,11 @@ import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import './Form.css';
 import FormPage1Part1 from "./FormPage1Part1";
-import {BackLink, Errors} from "../../../common";
+import {ButtonLink, Errors} from "../../../common";
 import FormPage1Part2 from "./FormPage1Part2";
 import {validarFormatoDNI, validarFormatoNIE} from "../../actions";
 
-const FormPage1 = ({formData, setFormData, nextPage}) => {
+const FormPage1 = ({formData, setFormData, nextPage, exit}) => {
 
     const [backendErrors, setBackendErrors] = useState(null);
 
@@ -65,7 +65,7 @@ const FormPage1 = ({formData, setFormData, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Datos personales</h1>
-                <BackLink></BackLink>
+                <ButtonLink route={exit}></ButtonLink>
             </div>
 
             <form onSubmit={handleSubmit}>

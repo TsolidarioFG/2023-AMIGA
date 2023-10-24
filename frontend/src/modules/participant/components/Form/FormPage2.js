@@ -4,10 +4,10 @@ import Button from '@mui/material/Button';
 import './Form.css';
 import RegisterMinor from "./RegisterMinor";
 import FormPage2Part2 from "./FormPage2Part2";
-import {BackLink, Errors} from "../../../common";
+import {ButtonLink, Errors} from "../../../common";
 
 
-const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
+const FormPage1 = ({formData, setFormData, previousPage, nextPage, exit}) => {
 
     const [backendErrors, setBackendErrors] = useState(null);
 
@@ -34,7 +34,7 @@ const FormPage1 = ({formData, setFormData, previousPage, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Datos personales</h1>
-                <BackLink></BackLink>
+                <ButtonLink route={exit}></ButtonLink>
             </div>
             <RegisterMinor formData={formData} setFormData={setFormData}></RegisterMinor>
             <br/>

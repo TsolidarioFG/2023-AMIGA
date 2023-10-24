@@ -43,7 +43,7 @@ const VolunteerComponent = () => {
             <div className="row-container">
                 <TextField
                     className="item"
-                    label="Introuce nombre o apellidos"
+                    label="Introduce nombre o apellidos"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                 />

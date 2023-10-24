@@ -5,10 +5,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as selectors from "../../../app/selectors";
 import "./Form.css";
-import {BackLink, Errors} from "../../../common";
+import {ButtonLink, Errors} from "../../../common";
 import Programs from "./Programs";
 
-const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
+const FormPage4 = ({formData, setFormData, previousPage, nextPage, exit}) => {
     const demands = useSelector(selectors.getDemands);
     const [backendErrors, setBackendErrors] = useState(null);
     const [selectedDemand, setSelectedDemand] =
@@ -52,7 +52,7 @@ const FormPage4 = ({formData, setFormData, previousPage, nextPage}) => {
         <div className="container">
             <div className="header">
                 <h1>Tipo demanda</h1>
-                <BackLink></BackLink>
+                <ButtonLink route={exit}></ButtonLink>
             </div>
             <Programs formData={formData} setFormData={setFormData}></Programs>
             <form onSubmit={handleSubmit}>

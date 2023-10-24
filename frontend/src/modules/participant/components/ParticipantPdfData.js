@@ -301,7 +301,7 @@ const DocuPDF = ({formData, selectors}) => {
 
                     <View style={styles.Box} break>
                         <Text style={styles.textT}> SITUACIÓN LABORAL: </Text>
-                        <Text style={styles.text}> {selectors.studies}</Text>
+                        <Text style={styles.text}> {selectors.employment}</Text>
                         <Text style={styles.nextLine}></Text>
                         <Text style={styles.textT}> CUALIFICACIÓN PROFESIONAL:  </Text>
                         <Text style={styles.text}> {formData.qualification}</Text>

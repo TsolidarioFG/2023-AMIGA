@@ -8,6 +8,7 @@ import es.udc.paproject.backend.rest.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Transactional
 public class ParticipantServiceImpl implements ParticipantService {
 
     @Autowired
@@ -71,7 +73,6 @@ public class ParticipantServiceImpl implements ParticipantService {
             throw new InstanceNotFoundException("el participante no existe", doc);
         return participantMapper.toParticipantSummaryDto(participant);
     }
-
     @Override
     public ParticipantDto saveParticipant(ParticipantDto participantDto) {
         Participant participant = new Participant();
@@ -106,36 +107,26 @@ public class ParticipantServiceImpl implements ParticipantService {
             return null;
 
         setParticipantData(participantDto, participant);
-        for (KidDto kidDto : participantDto.getKids()) {
-            if (kidDto.getId() == null)
-                kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
-        }
-
-
         setAnnualData(participantDto, annualData);
-
-        Set<Participant_program> participantProgramList =
-                annualDataDao.getAnnualData(participant.getId(),
-                        Collections.max(participant.getYearList())).getPrograms();
-
         participant.addYear(LocalDate.now().getYear());
-        participantDao.save(participant);
-        annualDataDao.save(annualData);
+        kidDao.deleteAll(participant.getKids());
 
-        for (Participant_program program : participantProgramList) {
-            if (!isPresentProgram(participantDto.getPrograms(), program.getId())) {
-                participantProgramDao.deleteById(program.getId());
-            }
+        for (KidDto kidDto : participantDto.getKids()) {
+            kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
         }
+        Participant participantUpdated = participantDao.save(participant);
+        AnnualData annualDataSaved = annualDataDao.save(annualData);
 
         for (Participant_ProgramDto program : participantDto.getPrograms()) {
-            participantProgramDao.save(new Participant_program(annualData, selectorService.getProgram(program.getProgram()), program.isItinerary()));
+            participantProgramDao.save(new Participant_program(annualDataSaved, selectorService.getProgram(program.getProgram()), program.isItinerary()));
         }
 
 
-        observationDao.save(new Observation(LocalDate.now(), "Acogida año " + LocalDate.now().getYear(), participantDto.getObservation(), participant, ObservationType.GENERAL));
+        observationDao.save(new Observation(LocalDate.now(), "Acogida año " + LocalDate.now().getYear(),
+                participantDto.getObservation(),
+                participantUpdated, ObservationType.GENERAL));
 
-        return participantMapper.toParticipantDto(participant, annualDataDao.save(annualData));
+        return participantMapper.toParticipantDto(participantUpdated, annualDataSaved);
     }
 
     @Override
@@ -150,41 +141,26 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (annualData == null)
             return null;
 
-        List<Kid> kids = participant.getKids();
-
-        for (Kid kid : kids) {
-            if (!isPresentKid( participantDto.getKids(), kid.getId())) {
-                kidDao.deleteById(kid.getId());
-            }
-        }
-
-        for (KidDto kidDto : participantDto.getKids()) {
-            if (kidDto.getId() == null)
-                kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
-        }
-
-        Set<Participant_program> participantProgramList = annualData.getPrograms();
-
-        for (Participant_program program : participantProgramList) {
-            if (!isPresentProgram(participantDto.getPrograms(), program.getId())) {
-                participantProgramDao.deleteById(program.getId());
-            }
-        }
-
-        for (Participant_ProgramDto program : participantDto.getPrograms()) {
-            if (program.getId() == null)
-                participantProgramDao.save(new Participant_program(annualData, selectorService.getProgram(program.getProgram()), program.isItinerary()));
-        }
 
         setParticipantData(participantDto, participant);
-        annualData.setParticipant(participant);
         setAnnualData(participantDto, annualData);
+        kidDao.deleteAll(participant.getKids());
 
-        participantDao.save(participant);
-        annualDataDao.save(annualData);
-        observationDao.save(new Observation(LocalDate.now(), "Actualización datos personales", participantDto.getObservation(), participant, ObservationType.GENERAL));
+        for (KidDto kidDto : participantDto.getKids()) {
+            kidDao.save(new Kid(kidDto.getBirthDate(), Gender.valueOf(kidDto.getSex()), participant));
+        }
 
-        return participantMapper.toParticipantDto(participant, annualData);
+        participantProgramDao.deleteAll(annualData.getPrograms());
+        for (Participant_ProgramDto program : participantDto.getPrograms()) {
+            participantProgramDao.save(new Participant_program(annualData, selectorService.getProgram(program.getProgram()), program.isItinerary()));
+        }
+        Participant participantUpdated = participantDao.save(participant);
+        AnnualData annualDataUpdated = annualDataDao.save(annualData);
+
+        observationDao.save(new Observation(LocalDate.now(), "Actualización datos personales",
+                participantDto.getObservation(), participantUpdated, ObservationType.GENERAL));
+
+        return participantMapper.toParticipantDto(participantUpdated, annualDataUpdated);
     }
 
     @Override
@@ -220,10 +196,10 @@ public class ParticipantServiceImpl implements ParticipantService {
                 StringBuilder programs = new StringBuilder();
                 boolean itinerary = false;
 
-                for(Participant_program program : annualData.getPrograms()) {
+                for (Participant_program program : annualData.getPrograms()) {
                     programs.append(program.getProgram().getName());
                     programs.append("; ");
-                    if(program.isItinerary())
+                    if (program.isItinerary())
                         itinerary = true;
                 }
                 participantExcelDto.setPrograms(programs.toString());
@@ -372,15 +348,6 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private boolean isPresentProgram(List<Participant_ProgramDto> list, Long id) {
         for (Participant_ProgramDto item : list) {
-            if (Objects.equals(item.getId(), id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isPresentKid(List<KidDto> list, Long id) {
-        for (KidDto item : list) {
             if (Objects.equals(item.getId(), id)) {
                 return true;
             }

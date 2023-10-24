@@ -24,8 +24,8 @@ const ObservationForm = () => {
     const [type, setType] = useState('');
     const [backendErrors, setBackendErrors] = useState(null);
 
-    const handleFechaChange = (date) => {
-        setDate(date);
+    const handleFechaChange = (event) => {
+        setDate(event.target.value);
     };
 
     const handleTituloChange = (event) => {

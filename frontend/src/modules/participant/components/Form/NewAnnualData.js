@@ -74,6 +74,8 @@ const NewAnnualData = () => {
         derivation: '',
         observation: ''
     });
+    const exit = '/participant/details';
+
     function backendCall(onSucess, onErrors) {
         dispatch(actions.saveAnnualData(formData, onSucess, onErrors));
     }
@@ -104,6 +106,7 @@ const NewAnnualData = () => {
                         formData={formData}
                         setFormData={setFormData}
                         nextPage={nextPage}
+                        exit={exit}
                     />
                 );
             case 2:
@@ -114,6 +117,7 @@ const NewAnnualData = () => {
                             setFormData={setFormData}
                             nextPage={nextPage}
                             previousPage={previousPage}
+                            exit={exit}
                         />
                     </div>
                 );
@@ -124,6 +128,7 @@ const NewAnnualData = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
+                        exit={exit}
                     />
                 );
             case 4:
@@ -133,6 +138,7 @@ const NewAnnualData = () => {
                         setFormData={setFormData}
                         nextPage={nextPage}
                         previousPage={previousPage}
+                        exit={exit}
                     />
                 );
             case 5:
@@ -141,6 +147,8 @@ const NewAnnualData = () => {
                         formData={formData}
                         previousPage={previousPage}
                         submitAction={backendCall}
+                        exit={exit}
+                        updateObservations={true}
                     ></FormConfirm>
                 );
             default:

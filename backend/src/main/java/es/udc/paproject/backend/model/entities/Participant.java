@@ -23,8 +23,8 @@ public class Participant {
     private LocalDate birthDate;
     private LocalDate datePi;
     private LocalDate interviewPi;
-    @OneToMany(mappedBy = "participant")
-    private List<Kid> kids;
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+    private List<Kid> kids = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "country_id")
@@ -119,6 +119,14 @@ public class Participant {
 
     public void setKids(List<Kid> kids) {
         this.kids = kids;
+    }
+
+    public void addKid(Kid kid){
+        this.kids.add(kid);
+    }
+
+    public void deleteKid(Kid kid){
+        this.kids.remove(kid);
     }
 
     public LocalDate getDatePi() {

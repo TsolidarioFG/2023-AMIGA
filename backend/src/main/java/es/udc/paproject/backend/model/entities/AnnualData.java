@@ -104,7 +104,7 @@ public class AnnualData {
     @JoinColumn(name = "demand_id")
     private Demand demand;
 
-    @OneToMany(mappedBy = "annualData")
+    @OneToMany(mappedBy = "annualData", cascade = CascadeType.ALL)
     private Set<Participant_program> programs = new HashSet<>();
     private String derivation;
 
@@ -442,6 +442,14 @@ public class AnnualData {
 
     public void setPrograms(Set<Participant_program> programs) {
         this.programs = programs;
+    }
+
+    public void addProgram(Participant_program program){
+        this.programs.add(program);
+    }
+
+    public void deleteProgram(Participant_program program){
+        this.programs.remove(program);
     }
 
     public String getDerivation() {

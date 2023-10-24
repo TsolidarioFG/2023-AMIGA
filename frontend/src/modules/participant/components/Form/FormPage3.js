@@ -9,9 +9,9 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import './Form.css';
 import Autocomplete from "@mui/material/Autocomplete";
-import {BackLink, Errors} from "../../../common";
+import {ButtonLink, Errors} from "../../../common";
 
-const FormPage3 = ({formData, setFormData, nextPage, previousPage}) => {
+const FormPage3 = ({formData, setFormData, nextPage, previousPage, exit}) => {
     const studies = useSelector(selectors.getStudies);
     const employment = useSelector(selectors.getEmployments);
     const languages = useSelector(selectors.getLanguages);
@@ -171,7 +171,7 @@ const FormPage3 = ({formData, setFormData, nextPage, previousPage}) => {
             <form onSubmit={handleSubmit}>
                 <div className="header">
                     <h1>Experiencia Laboral</h1>
-                    <BackLink></BackLink>
+                    <ButtonLink route={exit}></ButtonLink>
                 </div>
                 <div className="row-container">
                     <Autocomplete

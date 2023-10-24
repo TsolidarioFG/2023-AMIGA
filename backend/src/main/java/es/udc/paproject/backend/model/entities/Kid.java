@@ -22,6 +22,10 @@ public class Kid {
         this.participant = participant;
     }
 
+    public Kid(LocalDate birthDate, Gender gender) {
+        this.birthDate = birthDate;
+        this.gender = gender;
+    }
     public Kid() {
 
     }

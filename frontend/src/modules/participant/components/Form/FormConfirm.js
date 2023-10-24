@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import {Button, Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Toolbar} from "@mui/material";
 import {PDFDownloadLink, PDFViewer} from "@react-pdf/renderer";
 import './Confirm.css';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ParticipantPdf from "../ParticipantPdf";
 import Typography from "@mui/material/Typography";
 import * as selectors from "../../../app/selectors";
 import {Errors} from "../../../common";
+import {useNavigate} from "react-router-dom";
+import * as actions from "../../actions";
 
-const FormConfirm = ({formData, previousPage, submitAction}) => {
+const FormConfirm = ({formData, previousPage, submitAction, exit, updateObservations}) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [backendErrors, setBackendErrors] = useState(null);
     const [data, setData] = useState({
@@ -28,7 +31,6 @@ const FormConfirm = ({formData, previousPage, submitAction}) => {
         province: '',
         kids: ''
     });
-    const navigate = useNavigate();
 
     const municipalities = useSelector(selectors.getMunicipalities);
     const provinces = useSelector(selectors.getProvinces);
@@ -153,7 +155,7 @@ const FormConfirm = ({formData, previousPage, submitAction}) => {
         }
         if (formData.kids.length > 0) {
             const children = formData.kids.map(function (kid) {
-                return  kid.birthDate.split("-").reverse().join("-") + ' ' + kid.sex;
+                return kid.birthDate.split("-").reverse().join("-") + ' ' + kid.sex;
             });
 
             const childrenString = children.join(", ");
@@ -161,7 +163,7 @@ const FormConfirm = ({formData, previousPage, submitAction}) => {
 
         }
 
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [municipalities, provinces, countries]);
 
     const handleSubmit = () => {
@@ -170,10 +172,12 @@ const FormConfirm = ({formData, previousPage, submitAction}) => {
     }
 
     const handleCloseModal = () => {
+        if (updateObservations)
+            dispatch(actions.findObservations({idParticipant: formData.idParticipant, page: 0}))
         setOpen(false);
-        navigate(-1);
+        navigate(exit);
     }
-    if(!municipalities && !provinces && !countries && !housings && !maritalStatus && !cohabitation
+    if (!municipalities && !provinces && !countries && !housings && !maritalStatus && !cohabitation
         && !studies && !employment && !languages && !demands && !programs && !exclusionFactors)
         return null;
 
@@ -200,9 +204,9 @@ const FormConfirm = ({formData, previousPage, submitAction}) => {
             </AppBar>
             <br/>
 
-                <PDFViewer style={{width: "100%", height: "90vh"}}>
-                    <ParticipantPdf formData={formData} selectors={data}/>
-                </PDFViewer>
+            <PDFViewer style={{width: "100%", height: "90vh"}}>
+                <ParticipantPdf formData={formData} selectors={data}/>
+            </PDFViewer>
 
             <Dialog open={open} onClose={handleCloseModal}>
                 <DialogTitle>Datos guardados correctamente</DialogTitle>
